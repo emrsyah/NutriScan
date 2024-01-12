@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:nutriscan/model/meal_info.dart';
 import 'package:nutriscan/model/meal_model.dart';
 import 'package:nutriscan/model/meal_plan_model.dart';
 import 'package:nutriscan/model/recipe_model.dart';
@@ -56,17 +57,33 @@ class _HomePageState extends State<HomePage> {
     Uri uri = Uri.https(_baseURL, '/recipes/random', parameters);
     var response = await http.get(uri);
     var jsonData = jsonDecode(response.body);
-    logger.d(jsonData);
+    // logger.d(jsonData);
     List<Meal> local_recipes = [];
     for (var eachFood in jsonData["recipes"]) {
       int minuteReady = eachFood["readyInMinutes"];
+      List<String> localLabel = [];
+      if (eachFood["vegetarian"]) {
+        localLabel.add("Vegetarian");
+      }
+      if (eachFood["glutenFree"]) {
+        localLabel.add("Gluten Free");
+      }
+      if (eachFood["cheap"]) {
+        localLabel.add("Cheap");
+      }
+      if (eachFood["sustainable"]) {
+        localLabel.add("Sustainable");
+      }
+      if (eachFood["dairyFree"]) {
+        localLabel.add("Dairy Free");
+      }
       final food = Meal(
           id: eachFood["id"],
           title: eachFood["title"],
-          // imgURL: 'https://spoonacular.com/recipeImages/' +
-          //     (eachFood['image'] ?? ''),
-          imgURL: eachFood["image"] ?? 'https://spoonacular.com/recipeImages/' + eachFood['image'],
-          readyInMinutes: minuteReady);
+          imgURL: eachFood["image"] ??
+              'https://spoonacular.com/recipeImages/' + eachFood['image'],
+          readyInMinutes: minuteReady,
+          mealInfo: MealInfo(labels: localLabel));
       local_recipes.add(food);
     }
 
@@ -122,7 +139,7 @@ class _HomePageState extends State<HomePage> {
               HomeTopBar(),
               Container(
                 child: TextField(
-                  // onTap: () => _getFoods(),
+                  // onTap: () => {print(_recipes)},
                   decoration: InputDecoration(
                     labelText: 'Cari Makanan & Minuman',
                     filled: true,
@@ -195,17 +212,23 @@ class _HomePageState extends State<HomePage> {
                                                     child: Container(
                                                       color: Colors.white,
                                                       padding:
-                                                          EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 6,
+                                                              horizontal: 12),
                                                       child: Row(
                                                         mainAxisSize:
                                                             MainAxisSize.min,
                                                         children: [
-                                                          Icon(Icons.timer_outlined),
+                                                          Icon(Icons
+                                                              .timer_outlined),
                                                           SizedBox(
                                                             width: 6,
                                                           ),
                                                           Text(
-                                                            _recipes[index].readyInMinutes.toString() + " mins",
+                                                            _recipes[index]
+                                                                    .readyInMinutes
+                                                                    .toString() +
+                                                                " mins",
                                                             style: TextStyle(
                                                               fontSize: 14.0,
                                                               fontWeight:
@@ -225,13 +248,48 @@ class _HomePageState extends State<HomePage> {
                                             padding: EdgeInsets.symmetric(
                                                 vertical: 12, horizontal: 16),
                                             child: Column(
+                                              // mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
                                                   _recipes[index].title,
                                                   style: TextStyle(
-                                                      fontSize: 16,
+                                                      fontSize: 18,
                                                       fontWeight:
                                                           FontWeight.w700),
+                                                ),
+                                                SizedBox(height: 6,),
+                                                Row(
+                                                  children: List.generate(
+                                                    _recipes[index]
+                                                        .mealInfo
+                                                        .labels
+                                                        .length,
+                                                    (idx) {
+                                                      return Row(
+                                                        children: [
+                                                          ClipRRect(
+                                                            borderRadius: BorderRadius.circular(100),
+                                                            child: Container(
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.green
+                                                              ),
+                                                              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                                              child: Text(_recipes[index]
+                                                                  .mealInfo
+                                                                  .labels[idx],
+                                                                  style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white,fontSize: 13),
+                                                                  ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                              width:
+                                                                  6.0), // Add space between items
+                                                        ],
+                                                      );
+                                                    },
+                                                  ),
                                                 ),
                                               ],
                                             ),

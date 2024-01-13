@@ -7,14 +7,15 @@ final app_router = GoRouter(
   initialLocation: '/',
   routes: [
     GoRoute(
-      name: 'home', // Optional, add name to your routes. Allows you navigate by name instead of path
+      name: 'home',
       path: '/',
       builder: (context, state) => HomePage(),
     ),
     GoRoute(
       name: 'food_details',
-      path: '/food',
-      builder: (context, state) => FoodDetailsPage(),
+      path: '/food/:id',
+      builder: (context, state) =>
+          FoodDetailsPage(foodId: int.parse(state.pathParameters["id"] ?? "1")),
     ),
   ],
 );

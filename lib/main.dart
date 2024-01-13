@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nutriscan/core/routes/app_router.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ProviderScope(child: MyApp())
+  );
 }
 
 class MyApp extends StatelessWidget {

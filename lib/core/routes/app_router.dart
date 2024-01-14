@@ -1,4 +1,4 @@
-import 'package:nutriscan/features/foods/presentation/pages/food_detail_page.dart';
+import 'package:nutriscan/features/foods/presentation/pages/food_detail/food_detail_page.dart';
 import 'package:nutriscan/features/foods/presentation/pages/home/home_page.dart';
 import 'package:go_router/go_router.dart';
 

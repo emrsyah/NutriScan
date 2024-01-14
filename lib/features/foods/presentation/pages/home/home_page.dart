@@ -1,7 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
-import 'package:nutriscan/features/foods/domain/meal_model.dart';
 import 'package:nutriscan/features/foods/presentation/pages/home/home_controller.dart';
 import 'package:nutriscan/features/foods/presentation/pages/home/widget/food_card.dart';
 import 'package:nutriscan/features/foods/presentation/pages/home/widget/home_topbar.dart';
@@ -11,9 +12,6 @@ var loggerNoStack = Logger(
 );
 
 var logger = Logger();
-
-final String _baseURL = "api.spoonacular.com";
-final String API_KEY = "46d7ce88f3064ad6aac01e5164b7fcbc";
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -84,9 +82,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                       child: Text('No recipes found.'),
                     );
                   } else {
+                    // print(meals[0].mealInfo.toString());
+                    // final log = Logger();
+                    // log.d(meals[0].mealInfo.toString());
                     return ListView.builder(
                       itemCount: meals.length,
                       itemBuilder: (context, index) {
+                        // Text(meals.length.toString());
                         if (index >= 0 && index < meals.length) {
                           return FoodCard(recipes: meals, index: index);
                         } else {

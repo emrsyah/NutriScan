@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nutriscan/features/foods/domain/meal_model.dart';
-import 'package:nutriscan/features/foods/presentation/pages/food_detail_page.dart';
+import 'package:nutriscan/features/foods/presentation/pages/food_detail/food_detail_page.dart';
+import 'package:nutriscan/features/foods/presentation/widget/nutri_chip.dart';
 
 class FoodCard extends StatelessWidget {
   const FoodCard({
@@ -103,20 +104,7 @@ class FoodCard extends StatelessWidget {
                         (idx) {
                           return Row(
                             children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(100),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.green
-                                  ),
-                                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                  child: Text(_recipes[index]
-                                      .mealInfo
-                                      .labels[idx],
-                                      style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white,fontSize: 13),
-                                      ),
-                                ),
-                              ),
+                              NutriChip(label: _recipes[index].mealInfo.labels[idx]),
                               SizedBox(
                                   width:
                                       6.0), // Add space between items
@@ -133,3 +121,4 @@ class FoodCard extends StatelessWidget {
     );
   }
 }
+

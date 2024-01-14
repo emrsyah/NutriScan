@@ -34,7 +34,7 @@ class FoodCard extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     Image.network(
-                      _recipes[index].imgURL,
+                      _recipes[index].imgURL ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637",
                       fit: BoxFit.cover,
                     ),
                     Positioned(

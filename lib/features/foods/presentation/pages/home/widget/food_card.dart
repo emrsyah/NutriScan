@@ -33,6 +33,7 @@ class FoodCard extends StatelessWidget {
                     FoodDetailsPage(foodId: _recipes[index].id)));
       },
       child: Card(
+        surfaceTintColor: Colors.white,
           color: Color.fromRGBO(255, 255, 255, 1),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,10 +44,13 @@ class FoodCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.network(
-                      _recipes[index].imgURL ??
-                          "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637",
-                      fit: BoxFit.cover,
+                    ClipRRect(
+                      borderRadius: BorderRadius.only(topRight: Radius.circular(6), topLeft: Radius.circular(6)),
+                      child: Image.network(
+                        _recipes[index].imgURL ??
+                            "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637",
+                        fit: BoxFit.cover,
+                      ),
                     ),
                     Positioned(
                       right: 12.0,
@@ -122,7 +126,6 @@ class FoodCard extends StatelessWidget {
                                   color: getStatusColor(
                                       _recipes[index].ingredientAisles,
                                       _userAllergies),
-                                  fontSize: 15,
                                 ),
                               ),
                               TextSpan(

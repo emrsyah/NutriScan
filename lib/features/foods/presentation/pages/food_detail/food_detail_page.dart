@@ -174,67 +174,49 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                                 0, (index) {
                                           return Column(
                                             children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Image.asset(
-                                                        getStatusIcon(
-                                                            [
-                                                              meal
-                                                                  .extendedIngredients![
-                                                                      index]
-                                                                  .aisle!
-                                                            ],
-                                                            ref
-                                                                .read(
-                                                                    authControllerProvider)
-                                                                .allergies!),
-                                                        width: 20,
-                                                        height: 20,
-                                                      ),
-                                                      SizedBox(
-                                                        width: 12,
-                                                      ),
-                                                      Text(
-                                                        meal
-                                                                ?.extendedIngredients?[
-                                                                    index]
-                                                                .name ??
-                                                            "-",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontSize: 16,
-                                                            color:
-                                                                Colors.black87),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Text(meal
-                                                              ?.extendedIngredients?[
-                                                                  index]
-                                                              .amount
-                                                              ?.toInt()
-                                                              .toString() ??
-                                                          "-"),
-                                                      SizedBox(
-                                                        width: 4,
-                                                      ),
-                                                      Text(meal
-                                                              ?.extendedIngredients?[
-                                                                  index]
-                                                              .unit ??
-                                                          "-")
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Expanded(
+      child: Row(
+        children: [
+          Image.asset(
+            getStatusIcon(
+              [meal?.extendedIngredients?[index].aisle ?? ""],
+              ref.read(authControllerProvider).allergies!,
+            ),
+            width: 20,
+            height: 20,
+          ),
+          SizedBox(
+            width: 12,
+          ),
+          Expanded(
+            child: Text(
+              meal?.extendedIngredients?[index].name ?? "-",
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                color: Colors.black87,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+    Row(
+      children: [
+        Text(meal?.extendedIngredients?[index].amount?.toInt().toString() ?? "-"),
+        SizedBox(
+          width: 4,
+        ),
+        Text(meal?.extendedIngredients?[index].unit ?? "-"),
+      ],
+    ),
+  ],
+),
+
                                               SizedBox(
                                                 height: 16,
                                               )

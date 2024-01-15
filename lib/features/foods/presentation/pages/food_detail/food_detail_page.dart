@@ -21,6 +21,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
   @override
   void initState() {
     super.initState();
+    print(widget.foodId);
     getFoodDetails();
   }
 
@@ -34,6 +35,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         leading: GestureDetector(
             onTap: () => Navigator.pop(context),
@@ -69,11 +71,28 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        SizedBox(height: 8,),
+                        SizedBox(
+                          height: 8,
+                        ),
                         Container(
-                          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-                          decoration: BoxDecoration(color: getBgColor(meal!.ingredientAisles!, ref.read(authControllerProvider).allergies!), borderRadius: BorderRadius.circular(4)),
-                          child: Text(getStatusText(meal!.ingredientAisles!, ref.read(authControllerProvider).allergies!), style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: getTextColor(meal!.ingredientAisles!, ref.read(authControllerProvider).allergies!)),),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                          decoration: BoxDecoration(
+                              color: getBgColor(meal!.ingredientAisles!,
+                                  ref.read(authControllerProvider).allergies!),
+                              borderRadius: BorderRadius.circular(4)),
+                          child: Text(
+                            getStatusText(meal!.ingredientAisles!,
+                                ref.read(authControllerProvider).allergies!),
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                color: getTextColor(
+                                    meal!.ingredientAisles!,
+                                    ref
+                                        .read(authControllerProvider)
+                                        .allergies!)),
+                          ),
                         ),
                         Padding(
                             padding: EdgeInsets.only(top: 24),
@@ -82,16 +101,9 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                   vertical: 12, horizontal: 16),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(6),
-                                border: Border.all(
-                                    color: Colors.black12, width: 0.7),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.14),
-                                    spreadRadius: 4,
-                                    blurRadius: 710,
-                                    offset: Offset(0, 3),
-                                  )
-                                ],
+                                color: Colors.white,
+                                border: softBorder,
+                                boxShadow: [softDrop],
                               ),
                               child: Row(
                                 mainAxisAlignment:
@@ -164,12 +176,29 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                             children: [
                                               Row(
                                                 mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
                                                   Row(
                                                     children: [
-                                                      Image.asset(getStatusIcon([meal.extendedIngredients![index].aisle!], ref.read(authControllerProvider).allergies!), width: 20, height: 20,),
-                                                      SizedBox(width: 12,),
+                                                      Image.asset(
+                                                        getStatusIcon(
+                                                            [
+                                                              meal
+                                                                  .extendedIngredients![
+                                                                      index]
+                                                                  .aisle!
+                                                            ],
+                                                            ref
+                                                                .read(
+                                                                    authControllerProvider)
+                                                                .allergies!),
+                                                        width: 20,
+                                                        height: 20,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 12,
+                                                      ),
                                                       Text(
                                                         meal
                                                                 ?.extendedIngredients?[
@@ -177,9 +206,11 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                                                 .name ??
                                                             "-",
                                                         style: TextStyle(
-                                                            fontWeight: FontWeight.w500,
+                                                            fontWeight:
+                                                                FontWeight.w500,
                                                             fontSize: 16,
-                                                            color: Colors.black87),
+                                                            color:
+                                                                Colors.black87),
                                                       ),
                                                     ],
                                                   ),
@@ -204,12 +235,92 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                                   ),
                                                 ],
                                               ),
-                                              SizedBox(height: 16,)
+                                              SizedBox(
+                                                height: 16,
+                                              )
                                             ],
                                           );
                                         }),
                                       ),
-                                      Text("Belum ada instruksi", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black45), )
+                                      meal.recipeSteps.length != 0
+                                          ? Column(
+                                              children: List.generate(
+                                                  meal?.recipeSteps?.length ??
+                                                      0, (index) {
+                                                return Column(
+                                                  children: [
+                                                    Container(
+                                                      width: double.infinity,
+                                                      padding:
+                                                          EdgeInsets.all(20),
+                                                      decoration: BoxDecoration(
+                                                        border: softBorder,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6),
+                                                        color: Colors.white,
+                                                        // border: Border.all(width: 0.6, color: graySecond),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.grey
+                                                                .withOpacity(
+                                                                    0.14),
+                                                            spreadRadius: 0,
+                                                            blurRadius: 4,
+                                                            offset:
+                                                                Offset(0, 1),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            "Langkah " +
+                                                                (index + 1)
+                                                                    .toString(),
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontSize: 15),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 8,
+                                                          ),
+                                                          Text(
+                                                            meal
+                                                                .recipeSteps[
+                                                                    index]
+                                                                .step,
+                                                            style: TextStyle(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        170,
+                                                                        0,
+                                                                        0,
+                                                                        0)),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 16,
+                                                    )
+                                                  ],
+                                                );
+                                              }),
+                                            )
+                                          : Text(
+                                              "Belum ada instruksi",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.black45),
+                                            )
+
                                       // Center(child: Text("Tidak ada instruksi", style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black54),))
                                     ]))
                               ],
@@ -255,7 +366,6 @@ class FactInfo extends StatelessWidget {
   }
 }
 
-
 String getStatusText(List<String> labels, Map<String, dynamic> allergies) {
   if (containsNoAllergens(labels, allergies)) {
     return 'Kamu Alergi Makanan Ini';
@@ -276,7 +386,6 @@ Color getBgColor(List<String> labels, Map<String, dynamic> allergies) {
   }
 }
 
-
 Color getTextColor(List<String> labels, Map<String, dynamic> allergies) {
   if (containsNoAllergens(labels, allergies)) {
     return HexColor("#E81D23");
@@ -287,7 +396,6 @@ Color getTextColor(List<String> labels, Map<String, dynamic> allergies) {
   }
 }
 
-
 String getStatusIcon(List<String> labels, Map<String, dynamic> allergies) {
   if (containsNoAllergens(labels, allergies)) {
     return 'assets/image/x-icon.png';
@@ -297,4 +405,3 @@ String getStatusIcon(List<String> labels, Map<String, dynamic> allergies) {
     return 'assets/image/check-icon.png';
   }
 }
-

@@ -34,6 +34,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
@@ -109,12 +110,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         padding: EdgeInsets.only(top: 10),
         decoration: BoxDecoration(
           boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.14),
-              spreadRadius: 4,
-              blurRadius: 710,
-              offset: Offset(0, 3),
-            ),
+            softDrop,
           ],
         ),
         child: BottomNavigationBar(

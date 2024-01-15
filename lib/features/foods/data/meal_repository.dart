@@ -33,26 +33,39 @@ class MealRepository {
     return local_recipes;
   }
 
+  Future<List<dynamic>> getRecipeInstructions(int foodId) async {
+    Map<String, String> parameters = {
+      'apiKey': _apiKey,
+      'stepBreakdown': 'true',
+    };
+
+    Uri uri = Uri.https(
+        _baseURL, '/recipes/$foodId/analyzedInstructions', parameters);
+    var response = await http.get(uri);
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      List<dynamic> stepsData = jsonData[0]['steps'] ?? [];
+      return stepsData;
+    } else {
+      throw Exception('Failed to load recipe instructions');
+    }
+  }
+
   Future<MealDetail> getFoodDetails(int foodId) async {
     Map<String, String> parameters = {
       'apiKey': _apiKey,
-      'includeNutrition' : 'true',
+      'includeNutrition': 'true',
     };
 
     Uri uri = Uri.https(_baseURL, '/recipes/$foodId/information', parameters);
     var response = await http.get(uri);
-    print(response.statusCode);
 
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
-      // print(jsonData);
-      // log.d(jsonData);
-
-      return MealDetail.fromJson(jsonData);
+      List<dynamic> recipeSteps = await getRecipeInstructions(foodId);
+      return MealDetail.fromJson({...jsonData, "steps": recipeSteps});
     } else {
       throw Exception('Failed to load food details');
     }
-
   }
-
 }

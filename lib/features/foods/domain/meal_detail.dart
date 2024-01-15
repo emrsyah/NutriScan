@@ -16,30 +16,29 @@ class MealDetail {
   final double? calories; // Add this property
 
   // Additional Details
-  final List<String>? steps;
   final String? description;
   final MealInfo mealInfo;
   final List<Nutrient>? nutrients; // Add this property
   final List<String>? ingredientAisles; // Add this property
+  final List<RecipeStep> recipeSteps;
 
-  MealDetail({
-    required this.id,
-    required this.title,
-    required this.image,
-    required this.readyInMinutes,
-    required this.healthScore,
-    required this.pricePerServing,
-    required this.extendedIngredients,
-    required this.summary,
-    required this.nutrients,
-    required this.steps,
-    required this.description,
-    required this.mealInfo,
-    required this.servings,
-    required this.aisle,
-    required this.calories,
-    required this.ingredientAisles, // Add this property
-  });
+  MealDetail(
+      {required this.id,
+      required this.title,
+      required this.image,
+      required this.readyInMinutes,
+      required this.healthScore,
+      required this.pricePerServing,
+      required this.extendedIngredients,
+      required this.summary,
+      required this.nutrients,
+      required this.description,
+      required this.mealInfo,
+      required this.servings,
+      required this.aisle,
+      required this.calories,
+      required this.ingredientAisles, // Add this property
+      required this.recipeSteps});
 
   factory MealDetail.fromMap(Map<String, dynamic>? map) {
     bool isVegan = map?['vegan'] as bool? ?? false;
@@ -69,6 +68,10 @@ class MealDetail {
         ?.firstWhere((nutrient) => nutrient['name'] == 'Calories')['amount']
         ?.toDouble();
 
+    List<dynamic> steps = map?['steps'] ?? [];
+    List<RecipeStep> recipeSteps =
+        steps.map<RecipeStep>((step) => RecipeStep.fromMap(step)).toList();
+
     return MealDetail(
       id: map?['id'],
       title: map?['title'],
@@ -81,7 +84,6 @@ class MealDetail {
               ?.map((x) => ExtendedIngredient.fromMap(x))),
       summary: map?['summary'],
       servings: map?["servings"],
-      steps: [""], // You need to extract the steps from the JSON
       description: '', // You need to extract the description from the JSON
       mealInfo: mealInfo,
       nutrients: nutrientsList,
@@ -89,6 +91,7 @@ class MealDetail {
       aisle: map?["aisle"],
       ingredientAisles:
           ingredientAisles, // Assign ingredient aisles to the property
+      recipeSteps: recipeSteps,
     );
   }
 
@@ -112,6 +115,10 @@ class MealDetail {
         ?.firstWhere((nutrient) => nutrient['name'] == 'Calories')['amount']
         ?.toDouble();
 
+    List<dynamic> steps = json?['steps'] ?? [];
+    List<RecipeStep> recipeSteps =
+        steps.map<RecipeStep>((step) => RecipeStep.fromMap(step)).toList();
+
     List<Nutrient>? nutrientsList = List<Nutrient>.from(
         json?['nutrition']['nutrients']?.map((x) => Nutrient.fromMap(x)));
 
@@ -132,7 +139,6 @@ class MealDetail {
               ?.map((x) => ExtendedIngredient.fromMap(x))),
       summary: json?['summary'],
       servings: json?["servings"],
-      steps: [""], // You need to extract the steps from the JSON
       description: '', // You need to extract the description from the JSON
       mealInfo: mealInfo,
       nutrients: nutrientsList,
@@ -140,6 +146,7 @@ class MealDetail {
       aisle: json?["aisle"],
       ingredientAisles:
           ingredientAisles, // Assign ingredient aisles to the property
+      recipeSteps: recipeSteps,
     );
   }
 }
@@ -244,6 +251,20 @@ class Nutrient {
       amount: map?['amount']?.toDouble(),
       unit: map?['unit'],
       percentOfDailyNeeds: map?['percentOfDailyNeeds']?.toDouble(),
+    );
+  }
+}
+
+class RecipeStep {
+  final int number;
+  final String step;
+
+  RecipeStep({required this.number, required this.step});
+
+  factory RecipeStep.fromMap(Map<String, dynamic> map) {
+    return RecipeStep(
+      number: map['number'] as int? ?? 0,
+      step: map['step'] as String? ?? '',
     );
   }
 }

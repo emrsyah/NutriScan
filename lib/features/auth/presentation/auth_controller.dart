@@ -64,7 +64,8 @@ class AuthController extends StateNotifier<Users> {
     }
     final userRef = FirebaseFirestore.instance
         .collection("users")
-        .doc("GgcbBubnAjbwRxo7FvriC64Ayld2");
+        .doc(state.uid);
+    context.goNamed("onboarding-finishing");
     try {
       await userRef.update({"allergies": transformedData});
     } catch (e) {
@@ -93,7 +94,7 @@ class AuthController extends StateNotifier<Users> {
           'uid': userCredential.user!.uid,
           'name': name,
           'email': email,
-          'allegies': {
+          'allergies': {
             "Seafood": "OK",
             "Milk, Eggs, Other Dairy": "OK",
             "Meat": "OK",

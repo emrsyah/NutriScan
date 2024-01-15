@@ -38,9 +38,6 @@ class _SignUpState extends ConsumerState<SignUpPage> {
                     fontWeight: FontWeight.bold),
               ),
             ),
-            TextButton(onPressed: (){
-                context.pushNamed("onboarding-allergies");
-            }, child: Text("allergies")),
             Expanded(
               child: Align(
                 alignment: Alignment.bottomCenter,

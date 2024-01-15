@@ -1,4 +1,5 @@
 import 'package:nutriscan/features/auth/presentation/onboarding_allergies_page.dart';
+import 'package:nutriscan/features/auth/presentation/onboarding_finishing_page.dart';
 import 'package:nutriscan/features/auth/presentation/sign_in_page.dart';
 import 'package:nutriscan/features/auth/presentation/sign_up_page.dart';
 import 'package:nutriscan/features/common/presentation/pages/splash_page.dart';
@@ -29,6 +30,11 @@ final app_router = GoRouter(
       name: 'onboarding-allergies',
       path: '/onboarding-allergies',
       builder: (context, state) => OnboardingAllergiesPage(),
+    ),
+    GoRoute(
+      name: 'onboarding-finishing',
+      path: '/onboarding-finishing',
+      builder: (context, state) => OnboardingFinishing(),
     ),
     GoRoute(
       name: 'home',

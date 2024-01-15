@@ -56,6 +56,29 @@ class AuthController extends StateNotifier<Users> {
     }
   }
 
+  Future<void> setAllergies(
+      BuildContext context, List<Map<String, String>> _allergies) async {
+    Map<String, String> transformedData = {};
+    for (var data in _allergies) {
+      transformedData[data['value']!] = data['status']!;
+    }
+    final userRef = FirebaseFirestore.instance
+        .collection("users")
+        .doc("GgcbBubnAjbwRxo7FvriC64Ayld2");
+    try {
+      await userRef.update({"allergies": transformedData});
+    } catch (e) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text(e.toString()),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   Future<void> signUp(BuildContext context, String emailParam, String name,
       String password) async {
     try {
@@ -69,15 +92,22 @@ class AuthController extends StateNotifier<Users> {
             .set({
           'uid': userCredential.user!.uid,
           'name': name,
-          // 'username': user.username,
-          // 'birth': user.birth,
+          'email': email,
+          'allegies': {
+            "Seafood": "OK",
+            "Milk, Eggs, Other Dairy": "OK",
+            "Meat": "OK",
+            "Nut": "OK",
+            "Bakery/Bread": "OK",
+            "Nut butters, Jams, and Honey": "OK",
+            "Dried Fruits": "OK",
+          }
         });
-        // final users = user.copyWith(uid: userCredential.user!.uid);
         final users =
             Users(uid: userCredential.user!.uid, name: name, email: email);
         state = users;
         if (!mounted) return;
-        context.goNamed("home");
+        context.goNamed("onboarding-allergies");
       }
     } on FirebaseAuthException catch (e) {
       String message = '';
@@ -117,6 +147,48 @@ class AuthController extends StateNotifier<Users> {
     final users = Users.fromJson(checkUsers.data()!);
     state = users;
   }
+
+  Future<void> isUserExist(BuildContext context, String email) async {
+    var checkUsers = await FirebaseFirestore.instance
+        .collection("users")
+        .where("email", isEqualTo: email)
+        .get();
+    print(checkUsers);
+    if (checkUsers.size != 0) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text("Email sudah digunakan"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      // return true;
+    } else {
+      // return false;
+    }
+  }
+
+  Future<void> signOut(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      if (!mounted) return;
+      context.goNamed("sign-in");
+    } catch (e) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text(e.toString()),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  // Future<bool> isUserExist({required String email}) async {
+  // await getUsers(uid: uid)
+  // }
 
   Future<String> checkUsers() async {
     final result = FirebaseAuth.instance.currentUser;

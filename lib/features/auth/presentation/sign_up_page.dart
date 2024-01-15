@@ -38,6 +38,9 @@ class _SignUpState extends ConsumerState<SignUpPage> {
                     fontWeight: FontWeight.bold),
               ),
             ),
+            TextButton(onPressed: (){
+                context.pushNamed("onboarding-allergies");
+            }, child: Text("allergies")),
             Expanded(
               child: Align(
                 alignment: Alignment.bottomCenter,
@@ -179,12 +182,11 @@ class _SignUpState extends ConsumerState<SignUpPage> {
                                   });
                                   await ref
                                       .read(authControllerProvider.notifier)
-                                      .signUp(context, _emailController.text,
-                                      _nameController.text,
+                                      .signUp(
+                                          context,
+                                          _emailController.text,
+                                          _nameController.text,
                                           _passwordController.text);
-                                  setState(() {
-                                    _isLoading = false;
-                                  });
                                 }
                               },
                               child: Text(

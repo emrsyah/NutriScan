@@ -62,12 +62,13 @@ class AuthController extends StateNotifier<Users> {
     for (var data in _allergies) {
       transformedData[data['value']!] = data['status']!;
     }
-    final userRef = FirebaseFirestore.instance
-        .collection("users")
-        .doc(state.uid);
+    final userRef =
+        FirebaseFirestore.instance.collection("users").doc(state.uid);
     context.goNamed("onboarding-finishing");
     try {
       await userRef.update({"allergies": transformedData});
+      final updatedUsers = state.copyWith(allergies: transformedData);
+      state = updatedUsers;
     } catch (e) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
@@ -84,6 +85,15 @@ class AuthController extends StateNotifier<Users> {
       String password) async {
     try {
       final email = '$emailParam';
+      final allergies = {
+        "Seafood": "OK",
+        "Milk, Eggs, Other Dairy": "OK",
+        "Meat": "OK",
+        "Nut": "OK",
+        "Bakery/Bread": "OK",
+        "Nut butters, Jams, and Honey": "OK",
+        "Dried Fruits": "OK",
+      };
       var userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       if (userCredential.user != null) {
@@ -104,8 +114,11 @@ class AuthController extends StateNotifier<Users> {
             "Dried Fruits": "OK",
           }
         });
-        final users =
-            Users(uid: userCredential.user!.uid, name: name, email: email);
+        final users = Users(
+            uid: userCredential.user!.uid,
+            name: name,
+            email: email,
+            allergies: allergies);
         state = users;
         if (!mounted) return;
         context.goNamed("onboarding-allergies");
@@ -144,7 +157,6 @@ class AuthController extends StateNotifier<Users> {
   Future<void> getUsers({required String uid}) async {
     var checkUsers =
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
-
     final users = Users.fromJson(checkUsers.data()!);
     state = users;
   }
@@ -193,7 +205,9 @@ class AuthController extends StateNotifier<Users> {
 
   Future<String> checkUsers() async {
     final result = FirebaseAuth.instance.currentUser;
-    // Logger().i(result);
+    // print(result?.uid);
+    // print("cekkk");
+        // Logger().i(result);
     if (result != null) {
       await getUsers(uid: result.uid);
       return result.uid;

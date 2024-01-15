@@ -5,6 +5,7 @@ import 'package:nutriscan/features/auth/presentation/auth_controller.dart';
 import 'package:nutriscan/features/foods/presentation/pages/home/home_controller.dart';
 import 'package:nutriscan/features/foods/presentation/pages/home/widget/food_card.dart';
 import 'package:nutriscan/features/foods/presentation/pages/home/widget/home_topbar.dart';
+import 'package:nutriscan/theme.dart';
 
 var loggerNoStack = Logger(
   printer: PrettyPrinter(methodCount: 0),
@@ -38,7 +39,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
           child: Column(
             children: [
-              HomeTopBar(),
+              HomeTopBar(name: ref.read(authControllerProvider).name),
               TextButton(
                   onPressed: () {
                     ref.read(authControllerProvider.notifier).signOut(context);
@@ -49,6 +50,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   // onTap: () => {print(_recipes)},
                   decoration: InputDecoration(
                     labelText: 'Cari Makanan & Minuman',
+                    hintStyle: TextStyle(color: graySecond),
                     filled: true,
                     fillColor: Color.fromARGB(255, 245, 245, 245),
                     prefixIcon: Icon(Icons.search),
@@ -86,15 +88,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                       child: Text('No recipes found.'),
                     );
                   } else {
-                    // print(meals[0].mealInfo.toString());
-                    // final log = Logger();
-                    // log.d(meals[0].mealInfo.toString());
                     return ListView.builder(
                       itemCount: meals.length,
                       itemBuilder: (context, index) {
-                        // Text(meals.length.toString());
                         if (index >= 0 && index < meals.length) {
-                          return FoodCard(recipes: meals, index: index);
+                          return FoodCard(recipes: meals, index: index, userAllergies: ref.read(authControllerProvider).allergies!,);
                         } else {
                           return SizedBox.shrink();
                         }

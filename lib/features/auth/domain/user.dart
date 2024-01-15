@@ -2,11 +2,13 @@ class Users {
   String? uid;
   String? name;
   String? email;
+  Map<String, dynamic>? allergies;
 
   Users({
     this.uid,
     this.name,
     this.email,
+    this.allergies
   });
 
   factory Users.fromJson(Map<String, dynamic> json) {
@@ -14,6 +16,7 @@ class Users {
       uid: json['uid'],
       name: json['name'],
       email: json['email'],
+      allergies: json['allergies']
     );
   }
 
@@ -22,6 +25,7 @@ class Users {
       'uid': uid,
       'name': name,
       'email': email,
+      'allergies': allergies
     };
   }
 
@@ -29,11 +33,12 @@ class Users {
     String? uid,
     String? name,
     String? email,
+    Map<String, String>? allergies,
   }) {
     return Users(
-      uid: uid ?? this.uid,
-      name: name ?? this.name,
-      email: email ?? this.email,
-    );
+        uid: uid ?? this.uid,
+        name: name ?? this.name,
+        email: email ?? this.email,
+        allergies: allergies ?? this.allergies);
   }
 }

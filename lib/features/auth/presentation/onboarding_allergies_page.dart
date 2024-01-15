@@ -16,6 +16,11 @@ class OnboardingAllergiesPage extends ConsumerStatefulWidget {
 class _OnboardingAllergiesPageState extends ConsumerState<OnboardingAllergiesPage> {
   final _data = [
     {
+      "label": "Sea Food",
+      "value": "Seafood",
+      "status": "OK",
+    },
+    {
       "label": "Kacang-kacangan",
       "value": "Nut",
       "status": "OK",

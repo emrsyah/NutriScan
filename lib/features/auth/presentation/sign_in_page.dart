@@ -70,7 +70,6 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                             }
                             return null;
                           },
-                          // style: logInput,
                           decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(6),
@@ -154,16 +153,16 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                                   });
                                 }
                               },
-                              child: Text(
-                                'Masuk',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                              ),
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: primary,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(6),
                                 ),
+                              ),
+                              child: const Text(
+                                'Masuk',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
                               ),
                             ),
                           ),

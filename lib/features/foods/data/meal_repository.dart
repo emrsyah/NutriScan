@@ -22,7 +22,9 @@ class MealRepository {
     var jsonData = jsonDecode(response.body);
 
     List<Meal> local_recipes = [];
+    print('-----------------------------------------------------------');
     print(jsonData["recipes"][0]);
+    print('-----------------------------------------------------------');
     for (var eachFood in jsonData["recipes"]) {
       Meal meal = Meal.fromMap(eachFood);
       local_recipes.add(meal);
@@ -44,13 +46,7 @@ class MealRepository {
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
       // print(jsonData);
-      // print("flaggingggggggggggggggggggggg1");
-      // print("detail meal 1");
-      final log = Logger();
-      // log.d(jsonDecode(response.body)[""]);
-      // print(jsonData);
       // log.d(jsonData);
-      log.d("===========================================================");
 
       return MealDetail.fromJson(jsonData);
     } else {

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:nutriscan/features/auth/presentation/auth_controller.dart';
 import 'package:nutriscan/features/foods/presentation/pages/food_detail/food_detail_controller.dart';
 import 'package:nutriscan/features/foods/presentation/widget/nutri_chip.dart';
+import 'package:nutriscan/theme.dart';
+import 'package:nutriscan/utils/food_utils.dart';
 
 class FoodDetailsPage extends ConsumerStatefulWidget {
   final int foodId;
@@ -17,7 +21,6 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
   @override
   void initState() {
     super.initState();
-    print(widget.foodId);
     getFoodDetails();
   }
 
@@ -66,25 +69,11 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 12),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(
-                                meal?.mealInfo.labels.length as int? ?? 0,
-                                (index) {
-                              return Row(
-                                children: [
-                                  NutriChip(
-                                      label:
-                                          meal?.mealInfo.labels[index] ?? ""),
-                                  SizedBox(
-                                    width: 6,
-                                  )
-                                ],
-                              );
-                            }),
-                          ),
+                        SizedBox(height: 8,),
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                          decoration: BoxDecoration(color: getBgColor(meal!.ingredientAisles!, ref.read(authControllerProvider).allergies!), borderRadius: BorderRadius.circular(4)),
+                          child: Text(getStatusText(meal!.ingredientAisles!, ref.read(authControllerProvider).allergies!), style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: getTextColor(meal!.ingredientAisles!, ref.read(authControllerProvider).allergies!)),),
                         ),
                         Padding(
                             padding: EdgeInsets.only(top: 24),
@@ -177,48 +166,51 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                                 mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                                 children: [
-                                                  Text(
-                                                    meal
-                                                            ?.extendedIngredients?[
-                                                                index]
-                                                            .name ??
-                                                        "-",
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight.w500,
-                                                        fontSize: 16,
-                                                        color: Colors.black87),
+                                                  Row(
+                                                    children: [
+                                                      Image.asset(getStatusIcon([meal.extendedIngredients![index].aisle!], ref.read(authControllerProvider).allergies!), width: 20, height: 20,),
+                                                      SizedBox(width: 12,),
+                                                      Text(
+                                                        meal
+                                                                ?.extendedIngredients?[
+                                                                    index]
+                                                                .name ??
+                                                            "-",
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.w500,
+                                                            fontSize: 16,
+                                                            color: Colors.black87),
+                                                      ),
+                                                    ],
                                                   ),
                                                   Row(
                                                     children: [
-                                                      Row(
-                                                        children: [
-                                                          Text(meal
-                                                                  ?.extendedIngredients?[
-                                                                      index]
-                                                                  .amount
-                                                                  ?.toInt()
-                                                                  .toString() ??
-                                                              "-"),
-                                                          SizedBox(
-                                                            width: 4,
-                                                          ),
-                                                          Text(meal
-                                                                  ?.extendedIngredients?[
-                                                                      index]
-                                                                  .unit ??
-                                                              "-")
-                                                        ],
+                                                      Text(meal
+                                                              ?.extendedIngredients?[
+                                                                  index]
+                                                              .amount
+                                                              ?.toInt()
+                                                              .toString() ??
+                                                          "-"),
+                                                      SizedBox(
+                                                        width: 4,
                                                       ),
+                                                      Text(meal
+                                                              ?.extendedIngredients?[
+                                                                  index]
+                                                              .unit ??
+                                                          "-")
                                                     ],
                                                   ),
                                                 ],
                                               ),
-                                              SizedBox(height: 12,)
+                                              SizedBox(height: 16,)
                                             ],
                                           );
                                         }),
                                       ),
-                                      Center(child: Text("Tidak ada instruksi", style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black54),))
+                                      Text("Belum ada instruksi", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black45), )
+                                      // Center(child: Text("Tidak ada instruksi", style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black54),))
                                     ]))
                               ],
                             ))
@@ -262,3 +254,47 @@ class FactInfo extends StatelessWidget {
     );
   }
 }
+
+
+String getStatusText(List<String> labels, Map<String, dynamic> allergies) {
+  if (containsNoAllergens(labels, allergies)) {
+    return 'Kamu Alergi Makanan Ini';
+  } else if (containsWarnAllergens(labels, allergies)) {
+    return 'Mengandung Bahan yang Kamu Waspadai';
+  } else {
+    return 'Makanan Aman Kamu Konsumsi';
+  }
+}
+
+Color getBgColor(List<String> labels, Map<String, dynamic> allergies) {
+  if (containsNoAllergens(labels, allergies)) {
+    return HexColor("#F4CDC4");
+  } else if (containsWarnAllergens(labels, allergies)) {
+    return HexColor("#F8FCE8");
+  } else {
+    return secondary;
+  }
+}
+
+
+Color getTextColor(List<String> labels, Map<String, dynamic> allergies) {
+  if (containsNoAllergens(labels, allergies)) {
+    return HexColor("#E81D23");
+  } else if (containsWarnAllergens(labels, allergies)) {
+    return HexColor("#E6C620");
+  } else {
+    return primary;
+  }
+}
+
+
+String getStatusIcon(List<String> labels, Map<String, dynamic> allergies) {
+  if (containsNoAllergens(labels, allergies)) {
+    return 'assets/image/x-icon.png';
+  } else if (containsWarnAllergens(labels, allergies)) {
+    return 'assets/image/warn2-icon.png';
+  } else {
+    return 'assets/image/check-icon.png';
+  }
+}
+

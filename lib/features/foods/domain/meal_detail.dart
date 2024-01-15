@@ -16,35 +16,30 @@ class MealDetail {
   final double? calories; // Add this property
 
   // Additional Details
-  // final List<String>? ingredients;
   final List<String>? steps;
   final String? description;
   final MealInfo mealInfo;
   final List<Nutrient>? nutrients; // Add this property
+  final List<String>? ingredientAisles; // Add this property
 
-  // final double? calories;
-  // final int? servingSize;
-
-  MealDetail(
-      {required this.id,
-      required this.title,
-      required this.image,
-      required this.readyInMinutes,
-      required this.healthScore,
-      required this.pricePerServing,
-      required this.extendedIngredients,
-      required this.summary,
-      required this.nutrients,
-      // required this.ingredients,
-      required this.steps,
-      required this.description,
-      required this.mealInfo,
-      required this.servings,
-      required this.aisle,
-      required this.calories
-      // required this.calories,
-      // required this.servingSize,
-      });
+  MealDetail({
+    required this.id,
+    required this.title,
+    required this.image,
+    required this.readyInMinutes,
+    required this.healthScore,
+    required this.pricePerServing,
+    required this.extendedIngredients,
+    required this.summary,
+    required this.nutrients,
+    required this.steps,
+    required this.description,
+    required this.mealInfo,
+    required this.servings,
+    required this.aisle,
+    required this.calories,
+    required this.ingredientAisles, // Add this property
+  });
 
   factory MealDetail.fromMap(Map<String, dynamic>? map) {
     bool isVegan = map?['vegan'] as bool? ?? false;
@@ -54,6 +49,11 @@ class MealDetail {
 
     List<Nutrient>? nutrientsList = List<Nutrient>.from(
         map?['nutrition']['nutrients']?.map((x) => Nutrient.fromMap(x)));
+
+    List<dynamic>? extendedIngredients = map?['extendedIngredients'] ?? [];
+    List<String>? ingredientAisles = extendedIngredients
+        ?.map<String>((ingredient) => ingredient['aisle'].toString())
+        .toList();
 
     // Creating MealInfo with appropriate labels
     MealInfo mealInfo = MealInfo(
@@ -69,7 +69,7 @@ class MealDetail {
         ?.firstWhere((nutrient) => nutrient['name'] == 'Calories')['amount']
         ?.toDouble();
 
-    MealDetail meal = MealDetail(
+    return MealDetail(
       id: map?['id'],
       title: map?['title'],
       image: map?['image'],
@@ -81,19 +81,15 @@ class MealDetail {
               ?.map((x) => ExtendedIngredient.fromMap(x))),
       summary: map?['summary'],
       servings: map?["servings"],
-      // ingredients: List<String>?.from(
-      //     map?['extendedIngredients']?.map((x) => x?['original'])),
       steps: [""], // You need to extract the steps from the JSON
       description: '', // You need to extract the description from the JSON
-      // calories: map?['calories'] != null ? map?['calories']?.toDouble() : null,
-      // servingSize: map?['servingSize'] != null ? map?['servingSize'] : null,
       mealInfo: mealInfo,
       nutrients: nutrientsList,
       calories: calories,
       aisle: map?["aisle"],
+      ingredientAisles:
+          ingredientAisles, // Assign ingredient aisles to the property
     );
-    // print(meal);
-    return meal;
   }
 
   factory MealDetail.fromJson(Map<String, dynamic>? json) {
@@ -119,6 +115,11 @@ class MealDetail {
     List<Nutrient>? nutrientsList = List<Nutrient>.from(
         json?['nutrition']['nutrients']?.map((x) => Nutrient.fromMap(x)));
 
+    List<dynamic>? extendedIngredients = json?['extendedIngredients'] ?? [];
+    List<String>? ingredientAisles = extendedIngredients
+        ?.map<String>((ingredient) => ingredient['aisle'].toString())
+        .toList();
+
     return MealDetail(
       id: json?['id'],
       title: json?['title'],
@@ -130,17 +131,15 @@ class MealDetail {
           json?['extendedIngredients']
               ?.map((x) => ExtendedIngredient.fromMap(x))),
       summary: json?['summary'],
-      // ingredients: List<String>?.from(
-      //     json?['extendedIngredients']?.map((x) => x?['original'])),
+      servings: json?["servings"],
       steps: [""], // You need to extract the steps from the JSON
       description: '', // You need to extract the description from the JSON
-      servings: json?["servings"],
-      calories: calories,
-      // calories: json?['calories'] != null ? json?['calories']?.toDouble() : null,
-      // servingSize: json?['servingSize'] != null ? json?['servingSize'] : null,
       mealInfo: mealInfo,
       nutrients: nutrientsList,
+      calories: calories,
       aisle: json?["aisle"],
+      ingredientAisles:
+          ingredientAisles, // Assign ingredient aisles to the property
     );
   }
 }

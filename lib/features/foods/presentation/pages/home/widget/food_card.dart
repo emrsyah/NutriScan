@@ -4,6 +4,7 @@ import 'package:nutriscan/features/foods/domain/meal_model.dart';
 import 'package:nutriscan/features/foods/presentation/pages/food_detail/food_detail_page.dart';
 import 'package:nutriscan/features/foods/presentation/widget/nutri_chip.dart';
 import 'package:nutriscan/theme.dart';
+import 'package:nutriscan/utils/food_utils.dart';
 
 class FoodCard extends StatelessWidget {
   const FoodCard({
@@ -193,22 +194,4 @@ Color getStatusColor(List<String> labels, Map<String, dynamic> allergies) {
   }
 }
 
-bool containsNoAllergens(List<String> labels, Map<String, dynamic> allergies) {
-  for (String label in labels) {
-    print('Label = ' + label);
-    if (allergies.containsKey(label) && allergies[label] == 'NO') {
-      return true;
-    }
-  }
-  return false;
-}
 
-bool containsWarnAllergens(
-    List<String> labels, Map<String, dynamic> allergies) {
-  for (String label in labels) {
-    if (allergies.containsKey(label) && allergies[label] == 'WARN') {
-      return true;
-    }
-  }
-  return false;
-}

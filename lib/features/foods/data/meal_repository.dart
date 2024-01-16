@@ -3,6 +3,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
+import 'package:nutriscan/features/foods/domain/food_scan.dart';
+import 'package:nutriscan/features/foods/domain/food_scan_detail.dart';
 import 'package:nutriscan/features/foods/domain/meal_detail.dart';
 import 'package:nutriscan/features/foods/domain/meal_model.dart';
 
@@ -64,6 +66,41 @@ class MealRepository {
       var jsonData = jsonDecode(response.body);
       List<dynamic> recipeSteps = await getRecipeInstructions(foodId);
       return MealDetail.fromJson({...jsonData, "steps": recipeSteps});
+    } else {
+      throw Exception('Failed to load food details');
+    }
+  }
+
+  Future<List<FoodScanModel>> getFoodsFromScan(String name) async {
+    Map<String, String> parameters = {
+      'apiKey': _apiKey,
+      'query': name,
+    };
+    Uri uri = Uri.https(_baseURL, '/food/products/search', parameters);
+    var response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      List<dynamic> productsJson = jsonData['products'];
+      List<FoodScanModel> products = productsJson
+          .map((product) => FoodScanModel.fromMap(product))
+          .toList();
+      return products;
+    } else {
+      throw Exception('Failed to load food details');
+    }
+  }
+
+  Future<FoodScanDetailModel> getFoodScanDetail(String upcId) async {
+    Map<String, String> parameters = {
+      'apiKey': _apiKey,
+    };
+    Uri uri = Uri.https(_baseURL, '/food/products/upc/$upcId', parameters);
+    var response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      return FoodScanDetailModel.fromMap(jsonData);
     } else {
       throw Exception('Failed to load food details');
     }

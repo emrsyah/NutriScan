@@ -77,10 +77,12 @@ class _ScanPageState extends State<ScanPage> {
                       paintboxCustom: Paint()
                         ..style = PaintingStyle.stroke
                         ..strokeWidth = 4.0
-                        ..color = HexColor('#25A35F'),
-                      boxLeftOff: 8,
-                      boxRightOff: 8,
-                      boxHeight: MediaQuery.of(context).size.height / 2,
+                        ..color = const Color.fromARGB(153, 102, 160, 241),
+                      boxLeftOff: 4,
+                      boxBottomOff: 2.7,
+                      boxRightOff: 4,
+                      boxTopOff: 2.7,
+                      boxHeight: MediaQuery.of(context).size.height / 4,
                       getRawData: (value) {
                         inspect(value);
                       },
@@ -90,6 +92,8 @@ class _ScanPageState extends State<ScanPage> {
                       onCaptureImage: (Uint8List imageBytes) async {
                         String base64Image = base64Encode(imageBytes);
                         // Wait for the getScannedText callback to complete
+                        print("halo");
+                        // print(_myText);
                         if (_myText != null && _myText != "") {
                           Navigator.push(
                             context,

@@ -355,9 +355,11 @@ class ScalableOCRState extends State<ScalableOCR> {
   }
 
   Future<void> handleCaptureImage() async {
+    print("halo 1");
     if (_controller == null) {
       return;
     }
+    print("halo 2");
 
     try {
       await _controller!.setFlashMode(FlashMode.off);

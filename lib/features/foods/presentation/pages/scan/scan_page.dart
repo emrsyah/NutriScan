@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:nutriscan/features/foods/presentation/pages/scan/display_image.dart';
+import 'package:nutriscan/features/foods/presentation/pages/scan/scan_result_page.dart';
 import 'dart:developer';
 import 'package:nutriscan/theme.dart';
 import 'package:nutriscan/utils/lib/scalable_ocr.dart';
@@ -18,11 +18,13 @@ class ScanPage extends StatefulWidget {
 }
 
 class _ScanPageState extends State<ScanPage> {
-  String text = "";
   final StreamController<String> controller = StreamController<String>();
+  late String scannedText = '';
+  String _myText = "";
 
   void setText(value) {
     controller.add(value);
+    _myText = value;
   }
 
   @override
@@ -85,18 +87,29 @@ class _ScanPageState extends State<ScanPage> {
                       getScannedText: (value) {
                         setText(value);
                       },
-                      onCaptureImage: (Uint8List imageBytes) {
-                        // Handle the captured image bytes here
-                        // You can save it to storage, send it to a server, etc.
+                      onCaptureImage: (Uint8List imageBytes) async {
                         String base64Image = base64Encode(imageBytes);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                            DisplayImagePage(imageBytes: imageBytes)
-                          ),
-                        );
-                        print("halooo");
+                        // Wait for the getScannedText callback to complete
+                        if (_myText != null && _myText != "") {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ScanResultPage(
+                                imageBytes: imageBytes,
+                                name: _myText,
+                              ),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              content: Text("Teks belum terscan"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
                         print(
                             'Image captured successfully! Base64: $base64Image');
                       },
@@ -107,6 +120,7 @@ class _ScanPageState extends State<ScanPage> {
             ),
             // Second Section (Fixed height of 240)
             Container(
+              padding: EdgeInsets.only(top: 36, right: 20, left: 20),
               height: 240.0,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -119,30 +133,54 @@ class _ScanPageState extends State<ScanPage> {
               ),
               child: Center(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     StreamBuilder<String>(
                       stream: controller.stream,
                       builder: (BuildContext context,
                           AsyncSnapshot<String> snapshot) {
-                        return Result(
-                            text: snapshot.data != null
-                                ? snapshot.data!
-                                : "Melakukan Scanning...");
+                        return (snapshot.data != null && snapshot.data != "")
+                            ? Text(
+                                snapshot.data!,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: primary),
+                              )
+                            : Text(
+                                "Melakukan Scanning...",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w700),
+                              );
+                        // return Result(
+                        //     text: (snapshot.data != null && snapshot.data != "")
+                        //         ? snapshot.data!
+                        //         : "Melakukan Scanning...");
                       },
                     ),
-                    TextButton(
-                      onPressed: () {
-                        print("tesss");
-                        // Trigger image capture when button is pressed
-                        // ScalableOCRState? ocrState =
-                        ScalableOCRState? ocrState = widget.ocrKey.currentState;
-                        print(ocrState);
-                        if (ocrState != null) {
-                          print("helo boi");
-                          ocrState.handleCaptureImage();
-                        }
-                      },
-                      child: Text("Konfirmasi"),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: TextButton(
+                        onPressed: () {
+                          ScalableOCRState? ocrState =
+                              widget.ocrKey.currentState;
+                          if (ocrState != null) {
+                            ocrState.handleCaptureImage();
+                          }
+                        },
+                        child: Text(
+                          "Konfirmasi",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                        ),
+                      ),
                     )
                   ],
                 ),
@@ -152,19 +190,5 @@ class _ScanPageState extends State<ScanPage> {
         ),
       ),
     );
-  }
-}
-
-class Result extends StatelessWidget {
-  const Result({
-    Key? key,
-    required this.text,
-  }) : super(key: key);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(text);
   }
 }

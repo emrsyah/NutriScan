@@ -361,9 +361,10 @@ class ScalableOCRState extends State<ScalableOCR> {
 
     try {
       await _controller!.setFlashMode(FlashMode.off);
+      // await _controller?.setZoomLevel(_currentScale/1.1);
       final XFile imageFile = await _controller!.takePicture();
+      // await _controller?.setZoomLevel(1);
       final Uint8List imageBytes = await imageFile.readAsBytes();
-
       // Calculate the crop coordinates based on the box position
       double boxLeft = widget.boxLeftOff;
       double boxTop = widget.boxTopOff;

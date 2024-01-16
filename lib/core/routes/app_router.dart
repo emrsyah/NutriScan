@@ -6,6 +6,7 @@ import 'package:nutriscan/features/common/presentation/pages/splash_page.dart';
 import 'package:nutriscan/features/foods/presentation/pages/food_detail/food_detail_page.dart';
 import 'package:nutriscan/features/foods/presentation/pages/home/home_page.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nutriscan/features/foods/presentation/pages/scan/scan_page.dart';
 
 // GoRouter configuration
 final app_router = GoRouter(
@@ -46,6 +47,11 @@ final app_router = GoRouter(
       path: '/food/:id',
       builder: (context, state) =>
           FoodDetailsPage(foodId: int.parse(state.pathParameters["id"] ?? "1")),
+    ),
+    GoRoute(
+      name: 'scan',
+      path: '/scan',
+      builder: (context, state) => ScanPage(),
     ),
   ],
 );

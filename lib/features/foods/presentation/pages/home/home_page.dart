@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 import 'package:nutriscan/features/auth/presentation/auth_controller.dart';
 import 'package:nutriscan/features/foods/presentation/pages/home/home_controller.dart';
@@ -141,7 +142,9 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             BottomNavigationBarItem(
               icon: GestureDetector(
-                onTap: () => {},
+                onTap: () => {
+                  context.pushNamed('scan')
+                },
                 child: Container(
                   width: 72.0,
                   height: 72.0,

@@ -45,12 +45,13 @@ class _SignUpState extends ConsumerState<SignUpPage> {
                   key: _formKey,
                   child: Container(
                     padding: EdgeInsets.only(top: 64, left: 18, right: 20),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(24),
                           topRight: Radius.circular(24),
-                        )),
+                        )
+                        ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

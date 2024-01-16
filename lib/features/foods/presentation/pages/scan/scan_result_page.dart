@@ -18,7 +18,7 @@ class ScanResultPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final resultAsyncValue = ref.watch(ScanResultProvider("energen"));
+    final resultAsyncValue = ref.watch(ScanResultProvider("Bakso"));
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -28,6 +28,11 @@ class ScanResultPage extends ConsumerWidget {
             'Hasil Scan',
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
           ),
+          shape: Border(
+              bottom: BorderSide(
+            color: graySecond,
+            width: 0.5,
+          )),
           centerTitle: true,
         ),
         body: Padding(
@@ -76,7 +81,9 @@ class ScanResultPage extends ConsumerWidget {
                     fontWeight: FontWeight.w600, color: gray, fontSize: 15),
                 textAlign: TextAlign.start,
               ),
-              SizedBox(height: 12,),
+              SizedBox(
+                height: 12,
+              ),
               resultAsyncValue.when(
                 data: (data) {
                   if (data.length > 1) {
@@ -88,12 +95,15 @@ class ScanResultPage extends ConsumerWidget {
                       child: ListView.builder(
                         itemCount: data.length, // Exclude the top result
                         itemBuilder: (context, index) {
-                          final foodItem =
-                              data[index]; // Skip the top result
+                          final foodItem = data[index]; // Skip the top result
 
                           return GestureDetector(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => ScanResulDetailPage(upcId: data[index].upcId)));
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ScanResulDetailPage(
+                                          upcId: data[index].upcId)));
                             },
                             child: Container(
                               margin: EdgeInsets.symmetric(

@@ -20,7 +20,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
   @override
   void initState() {
     super.initState();
-    print(widget.foodId);
+    // print(widget.foodId);
     getFoodDetails();
   }
 
@@ -38,9 +38,9 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
       appBar: AppBar(
         leading: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: Icon(Icons.chevron_left_rounded,
+            child: const Icon(Icons.chevron_left_rounded,
                 size: 32, color: Colors.black54)),
-        title: Text("Detail Makanan",
+        title: const Text("Detail Makanan",
             style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -66,16 +66,16 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                           child: Text(
                             meal?.title ?? "",
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 8,
                         ),
                         Container(
                           padding:
-                              EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                              const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
                           decoration: BoxDecoration(
                               color: getBgColor(meal!.ingredientAisles!,
                                   ref.read(authControllerProvider).allergies!),
@@ -96,7 +96,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                         Padding(
                             padding: EdgeInsets.only(top: 24),
                             child: Container(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   vertical: 12, horizontal: 16),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(6),
@@ -126,7 +126,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                 ],
                               ),
                             )),
-                        SizedBox(
+                        const SizedBox(
                           height: 32,
                         ),
                         DefaultTabController(

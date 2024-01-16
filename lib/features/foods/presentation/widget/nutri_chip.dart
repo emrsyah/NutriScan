@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nutriscan/theme.dart';
 
 class NutriChip extends StatelessWidget {
   const NutriChip({
@@ -14,7 +15,7 @@ class NutriChip extends StatelessWidget {
       borderRadius: BorderRadius.circular(100),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.green
+          color: primary
         ),
         padding: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
         child: Text(label,

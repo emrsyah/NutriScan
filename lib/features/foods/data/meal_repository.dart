@@ -100,7 +100,8 @@ class MealRepository {
 
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
-      return FoodScanDetailModel.fromMap(jsonData);
+      FoodScanDetailModel transformed = FoodScanDetailModel.fromMap(jsonData);
+      return transformed;
     } else {
       throw Exception('Failed to load food details');
     }

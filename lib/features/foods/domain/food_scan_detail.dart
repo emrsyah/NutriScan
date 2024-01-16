@@ -57,13 +57,13 @@ class FoodScanDetailModel {
         id: map["id"],
         title: map["title"],
         image: map["image"],
-        badges: map["badges"],
-        importantBadges: map["importantBadges"],
+        badges: List<String>.from(map['badges'] as List<dynamic>? ?? []),
+        importantBadges: List<String>.from(map['importantBadges'] as List<dynamic>? ?? []),
         ingredients: ings,
         carbs:
             map["nutrition"]["carbs"] ?? "-",
         protein: map["nutrition"]["protein"] ?? "-",
         fat: map["nutrition"]["fat"] ?? "-",
-        calories: map["nutrition"]["calories"]);
+        calories: map["nutrition"]["calories"] != null ? (map["nutrition"]["calories"] as double).toInt() : null);
   }
 }

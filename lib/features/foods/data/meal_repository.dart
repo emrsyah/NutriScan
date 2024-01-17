@@ -91,18 +91,22 @@ class MealRepository {
     }
   }
 
-  Future<FoodScanDetailModel> getFoodScanDetail(String upcId) async {
+  Future<FoodScanDetailModel> getFoodScanDetail(int id) async {
+    // * GAK SEMUA MAKANAN BISA PAKE UPC LANGSUNG, NANTI BUAT AJA LAGI YANG FUNCTION KHUSUS UPC KALO BARCODE
     Map<String, String> parameters = {
       'apiKey': _apiKey,
     };
-    Uri uri = Uri.https(_baseURL, '/food/products/upc/$upcId', parameters);
+    // print(formattedUpc);
+    Uri uri = Uri.https(_baseURL, '/food/products/$id', parameters);
     var response = await http.get(uri);
-
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
       FoodScanDetailModel transformed = FoodScanDetailModel.fromMap(jsonData);
       return transformed;
     } else {
+      if ((jsonDecode(response.body)["message"] as String).contains("does not exist.")){
+        throw ("Makanan dengan Id $id tak ditemukan");
+      }
       throw Exception('Failed to load food details');
     }
   }

@@ -103,7 +103,7 @@ class ScanResultPage extends ConsumerWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => ScanResulDetailPage(
-                                          upcId: data[index].upcId)));
+                                          id: data[index].id)));
                             },
                             child: Container(
                               margin: const EdgeInsets.symmetric(

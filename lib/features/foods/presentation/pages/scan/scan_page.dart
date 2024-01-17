@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:nutriscan/features/foods/presentation/pages/scan/scan_result_page.dart';
 import 'dart:developer';
 import 'package:nutriscan/theme.dart';

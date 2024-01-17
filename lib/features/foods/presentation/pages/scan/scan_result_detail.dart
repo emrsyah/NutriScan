@@ -5,13 +5,13 @@ import 'package:nutriscan/features/foods/presentation/widget/nutri_chip.dart';
 import 'package:nutriscan/theme.dart';
 
 class ScanResulDetailPage extends ConsumerWidget {
-  const ScanResulDetailPage({super.key, required this.upcId});
+  const ScanResulDetailPage({super.key, required this.id});
 
-  final String upcId;
+  final int id;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final resultAsyncValue = ref.watch(ScanResultDetailProvider(upcId));
+    final resultAsyncValue = ref.watch(ScanResultDetailProvider(id));
     return SafeArea(
       child: Scaffold(
           backgroundColor: Colors.white,
@@ -64,25 +64,30 @@ class ScanResulDetailPage extends ConsumerWidget {
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                       ),
-                      const SizedBox(height: 20,),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          boxShadow: [
-                            softDrop
-                          ],
+                          boxShadow: [softDrop],
                           border: softBorder,
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 2),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16, horizontal: 2),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             NutritionItem(label: 'Carbs', content: data.carbs),
-                            NutritionItem(label: 'Protein', content: data.protein),
+                            NutritionItem(
+                                label: 'Protein', content: data.protein),
                             NutritionItem(label: 'Fat', content: data.fat),
                             NutritionItem(
-                                label: 'Calories', content: data.calories != null ? '${data.calories} kcal' : '-'),
+                                label: 'Calories',
+                                content: data.calories != null
+                                    ? '${data.calories} kcal'
+                                    : '-'),
                           ],
                         ),
                       ),
@@ -105,16 +110,26 @@ class ScanResulDetailPage extends ConsumerWidget {
                         height: 12,
                       ),
                       Wrap(
-                        alignment: WrapAlignment.start,
-                        crossAxisAlignment: WrapCrossAlignment.start,
-                        spacing: 8.0,
-                        runSpacing: 10.0,
-                        children: List.generate(
-                            data.ingredients.split(", ").length, (index) {
-                          List<String> ings = data.ingredients.split(", ");
-                          return NutriChip(label: ings[index]);
-                        }),
-                      ),
+                          alignment: WrapAlignment.start,
+                          crossAxisAlignment: WrapCrossAlignment.start,
+                          spacing: 8.0,
+                          runSpacing: 10.0,
+                          children: data.ingredients != ""
+                              ? List.generate(
+                                  data.ingredients.split(", ").length, (index) {
+                                  List<String> ings =
+                                      data.ingredients.split(", ");
+                                  return NutriChip(label: ings[index]);
+                                })
+                              : [
+                                  Text(
+                                    "Tidak ada data kandungan",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                        color: gray),
+                                  )
+                                ]),
                       const SizedBox(
                         height: 24,
                       ),
@@ -134,9 +149,19 @@ class ScanResulDetailPage extends ConsumerWidget {
                         crossAxisAlignment: WrapCrossAlignment.start,
                         spacing: 8.0,
                         runSpacing: 10.0,
-                        children: List.generate(data.badges.length, (index) {
-                          return NutriChip(label: data.badges[index]);
-                        }),
+                        children: data.badges.isNotEmpty
+                            ? List.generate(data.badges.length, (index) {
+                                return NutriChip(label: data.badges[index]);
+                              })
+                            : [
+                                Text(
+                                  "Tidak ada tagar",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                      color: gray),
+                                )
+                              ],
                       )
                     ],
                   ),
@@ -144,7 +169,10 @@ class ScanResulDetailPage extends ConsumerWidget {
               );
             },
             error: (error, stack) {
-              return Center(child: Text('Error: $error'));
+              return Center(child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text('Terjadi Kesalahan: $error', textAlign: TextAlign.center, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: gray),),
+              ), );
             },
           )),
     );
@@ -168,7 +196,8 @@ class NutritionItem extends StatelessWidget {
         const SizedBox(height: 4.0),
         Text(
           label,
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: gray),
+          style:
+              TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: gray),
         ),
       ],
     );

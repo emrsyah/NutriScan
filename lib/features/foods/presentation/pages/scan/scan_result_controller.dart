@@ -10,7 +10,7 @@ final ScanResultProvider =
 });
 
 final ScanResultDetailProvider =
-    FutureProvider.family<FoodScanDetailModel, String>((ref, upcId) async {
+    FutureProvider.family<FoodScanDetailModel, int>((ref, id) async {
   final mealRepository = ref.read(mealRepositoryProvider);
-  return mealRepository.getFoodScanDetail(upcId);
+  return mealRepository.getFoodScanDetail(id);
 });

@@ -18,7 +18,7 @@ class ScanResultPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final resultAsyncValue = ref.watch(ScanResultProvider("Bakso"));
+    final resultAsyncValue = ref.watch(ScanResultProvider(name));
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -86,11 +86,7 @@ class ScanResultPage extends ConsumerWidget {
               ),
               resultAsyncValue.when(
                 data: (data) {
-                  if (data.length > 1) {
-                    // Display the list of items after the top result
-// Assuming data[index] is an instance of FoodScanModel
-// Adjust the properties based on your actual model structure
-
+                  if (data.isNotEmpty) {
                     return Expanded(
                       child: ListView.builder(
                         itemCount: data.length, // Exclude the top result
@@ -160,7 +156,10 @@ class ScanResultPage extends ConsumerWidget {
                   }
                 },
                 loading: () {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: CircularProgressIndicator(),
+                  ));
                 },
                 error: (error, stack) {
                   return Text('Error: $error');

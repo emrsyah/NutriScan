@@ -145,7 +145,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                     indicatorSize: TabBarIndicatorSize.label,
                                     indicator: BoxDecoration(
                                         borderRadius: BorderRadius.circular(50),
-                                        color: Colors.green,
+                                        color: primary,
                                         border: Border.all(width: 0)),
                                     tabs: const [
                                       Tab(
@@ -163,7 +163,6 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height,
                                     child: TabBarView(
-
                                       children: [
                                       Column(
                                         children: List.generate(
@@ -250,8 +249,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                           );
                                         }),
                                       ),
-                                      meal.recipeSteps.isNotEmpty
-                                          ? Column(
+                                      if (meal.recipeSteps.isNotEmpty) Column(
                                               children: List.generate(
                                                   meal?.recipeSteps?.length ??
                                                       0, (index) {
@@ -318,8 +316,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                                   ],
                                                 );
                                               }),
-                                            )
-                                          : const Text(
+                                            ) else const Text(
                                               "Belum ada instruksi",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(

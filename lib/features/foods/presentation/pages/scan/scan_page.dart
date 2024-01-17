@@ -48,14 +48,19 @@ class _ScanPageState extends State<ScanPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [softDrop],
-                              border: softBorder,
-                              borderRadius: BorderRadius.circular(6)),
-                          child: const Icon(Icons.chevron_left_rounded, size: 32),
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                boxShadow: [softDrop],
+                                border: softBorder,
+                                borderRadius: BorderRadius.circular(6)),
+                            child: const Icon(Icons.chevron_left_rounded, size: 32),
+                          ),
                         ),
                         const Text(
                           "Scan Makanan",

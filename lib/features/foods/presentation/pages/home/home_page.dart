@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 import 'package:nutriscan/features/auth/presentation/auth_controller.dart';
+import 'package:nutriscan/features/foods/presentation/pages/common_widget/BottomNavigation.dart';
 import 'package:nutriscan/features/foods/presentation/pages/home/home_controller.dart';
 import 'package:nutriscan/features/foods/presentation/pages/home/widget/food_card.dart';
 import 'package:nutriscan/features/foods/presentation/pages/home/widget/home_topbar.dart';
@@ -105,71 +106,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.only(top: 10),
-        decoration: BoxDecoration(
-          boxShadow: [
-            softDrop,
-          ],
-        ),
-        child: BottomNavigationBar(
-          currentIndex: 0, // Set the initial selected index
-          selectedItemColor: Colors.black87,
-          unselectedItemColor: Colors.grey,
-          backgroundColor:
-              Colors.white, // Adjust the background color as needed
-          iconSize: 28,
-          selectedLabelStyle: const TextStyle(fontSize: 14),
-          unselectedLabelStyle: const TextStyle(fontSize: 14),
-          showUnselectedLabels: true,
-          type: BottomNavigationBarType.fixed,
-
-          // Handle navigation item taps
-          onTap: (index) {
-            // Add your navigation logic here
-          },
-
-          items: [
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.home_filled),
-              label: 'Beranda',
-            ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.favorite),
-              label: 'Favorit',
-            ),
-            BottomNavigationBarItem(
-              icon: GestureDetector(
-                onTap: () => {
-                  context.pushNamed('scan')
-                },
-                child: Container(
-                  width: 72.0,
-                  height: 72.0,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF25A35F), // Background color #25A35F
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.camera_alt_rounded,
-                    color: Colors.white,
-                    size: 32.0,
-                  ),
-                ),
-              ),
-              label: '',
-            ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.integration_instructions),
-              label: 'Donasi',
-            ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profil',
-            ),
-          ],
-        ),
-      ),
+      bottomNavigationBar: const BottomNavigation(idx: 0),
     );
   }
 }

@@ -51,19 +51,7 @@ class FoodScanDetailModel {
   }
 
   factory FoodScanDetailModel.fromMap(Map<String, dynamic> map) {
-    print("masuk bang");
-    print(map["ingredientCount"]);
-    print(map["title"]);
     String ings = map["ingredientCount"] > 0 ? map["ingredientList"] : "";
-    print("ini kah bang");
-    print(ings);
-    print(map["id"]);
-    print(map["title"]);
-    print(map["image"]);
-    print(map["nutrition"]["carbs"] ?? "-");
-    print(map["nutrition"]["protein"] ?? "-");
-    print(map["nutrition"]["fat"] ?? "-");
-    print(map["nutrition"]["calories"] != null ? (map["nutrition"]["calories"] as double).toInt() : null);
     print(List<String>.from(map['badges'] as List<dynamic>? ?? []));
     print(List<String>.from(map['importantBadges'] as List<dynamic>? ?? []));
     return FoodScanDetailModel(
@@ -71,12 +59,14 @@ class FoodScanDetailModel {
         title: map["title"],
         image: map["image"],
         badges: List<String>.from(map['badges'] as List<dynamic>? ?? []),
-        importantBadges: List<String>.from(map['importantBadges'] as List<dynamic>? ?? []),
+        importantBadges:
+            List<String>.from(map['importantBadges'] as List<dynamic>? ?? []),
         ingredients: ings,
-        carbs:
-            map["nutrition"]["carbs"] ?? "-",
+        carbs: map["nutrition"]["carbs"] ?? "-",
         protein: map["nutrition"]["protein"] ?? "-",
         fat: map["nutrition"]["fat"] ?? "-",
-        calories: map["nutrition"]["calories"] != null ? (map["nutrition"]["calories"] as double).toInt() : null);
+        calories: map["nutrition"]["calories"] != null
+            ? (map["nutrition"]["calories"] as double).toInt()
+            : null);
   }
 }

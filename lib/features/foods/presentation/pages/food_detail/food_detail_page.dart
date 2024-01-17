@@ -10,7 +10,7 @@ class FoodDetailsPage extends ConsumerStatefulWidget {
   final int foodId;
 
   // const FoodDetailsPage({super.key});
-  FoodDetailsPage({required this.foodId});
+  const FoodDetailsPage({super.key, required this.foodId});
 
   @override
   ConsumerState<FoodDetailsPage> createState() => _FoodDetailsPageState();
@@ -49,7 +49,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
       ),
       body: SafeArea(
           child: Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Consumer(
                 builder: (context, ref, _) {
                   final meal = ref.watch(foodDetailControllerProvider);
@@ -94,7 +94,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                           ),
                         ),
                         Padding(
-                            padding: EdgeInsets.only(top: 24),
+                            padding: const EdgeInsets.only(top: 24),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 12, horizontal: 16),
@@ -138,7 +138,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                     indicatorColor: Colors.transparent,
                                     dividerColor: Colors.transparent,
                                     unselectedLabelColor: Colors.black54,
-                                    labelStyle: TextStyle(
+                                    labelStyle: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500),
                                     labelColor: Colors.white,
@@ -147,24 +147,20 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                         borderRadius: BorderRadius.circular(50),
                                         color: Colors.green,
                                         border: Border.all(width: 0)),
-                                    tabs: [
+                                    tabs: const [
                                       Tab(
-                                          child: Container(
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text("Bahan"),
-                                        ),
-                                      )),
+                                          child: Align(
+                                            alignment: Alignment.center,
+                                            child: Text("Bahan"),
+                                          )),
                                       Tab(
-                                          child: Container(
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text("Instruksi"),
-                                        ),
-                                      )),
+                                          child: Align(
+                                            alignment: Alignment.center,
+                                            child: Text("Instruksi"),
+                                          )),
                                     ]),
-                                SizedBox(height: 24),
-                                Container(
+                                const SizedBox(height: 24),
+                                SizedBox(
                                     height: MediaQuery.of(context).size.height,
                                     child: TabBarView(
 
@@ -200,7 +196,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                                           width: 20,
                                                           height: 20,
                                                         ),
-                                                        SizedBox(
+                                                        const SizedBox(
                                                           width: 12,
                                                         ),
                                                         Expanded(
@@ -213,7 +209,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                                             overflow:
                                                                 TextOverflow
                                                                     .ellipsis,
-                                                            style: TextStyle(
+                                                            style: const TextStyle(
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w500,
@@ -235,7 +231,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                                               ?.toInt()
                                                               .toString() ??
                                                           "-"),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         width: 4,
                                                       ),
                                                       Text(meal
@@ -247,14 +243,14 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                                   ),
                                                 ],
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 height: 16,
                                               )
                                             ],
                                           );
                                         }),
                                       ),
-                                      meal.recipeSteps.length != 0
+                                      meal.recipeSteps.isNotEmpty
                                           ? Column(
                                               children: List.generate(
                                                   meal?.recipeSteps?.length ??
@@ -264,7 +260,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                                     Container(
                                                       width: double.infinity,
                                                       padding:
-                                                          EdgeInsets.all(20),
+                                                          const EdgeInsets.all(20),
                                                       decoration: BoxDecoration(
                                                         border: softBorder,
                                                         borderRadius:
@@ -280,7 +276,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                                             spreadRadius: 0,
                                                             blurRadius: 4,
                                                             offset:
-                                                                Offset(0, 1),
+                                                                const Offset(0, 1),
                                                           )
                                                         ],
                                                       ),
@@ -290,16 +286,14 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                                                 .start,
                                                         children: [
                                                           Text(
-                                                            "Langkah " +
-                                                                (index + 1)
-                                                                    .toString(),
-                                                            style: TextStyle(
+                                                            "Langkah ${index + 1}",
+                                                            style: const TextStyle(
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w600,
                                                                 fontSize: 15),
                                                           ),
-                                                          SizedBox(
+                                                          const SizedBox(
                                                             height: 8,
                                                           ),
                                                           Text(
@@ -307,7 +301,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                                                 .recipeSteps[
                                                                     index]
                                                                 .step,
-                                                            style: TextStyle(
+                                                            style: const TextStyle(
                                                                 color: Color
                                                                     .fromARGB(
                                                                         170,
@@ -318,14 +312,14 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                                                         ],
                                                       ),
                                                     ),
-                                                    SizedBox(
+                                                    const SizedBox(
                                                       height: 16,
                                                     )
                                                   ],
                                                 );
                                               }),
                                             )
-                                          : Text(
+                                          : const Text(
                                               "Belum ada instruksi",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
@@ -359,7 +353,7 @@ class FactInfo extends StatelessWidget {
       children: [
         Text(
           info,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.black87,
             fontSize: 16,
@@ -367,7 +361,7 @@ class FactInfo extends StatelessWidget {
         ),
         Text(
           desc,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.w500,
             color: Colors.black45,
             fontSize: 14,

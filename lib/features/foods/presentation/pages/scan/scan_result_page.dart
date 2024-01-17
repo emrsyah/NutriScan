@@ -11,10 +11,10 @@ class ScanResultPage extends ConsumerWidget {
   final String name;
 
   const ScanResultPage({
-    Key? key,
+    super.key,
     required this.imageBytes,
     required this.name,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +24,7 @@ class ScanResultPage extends ConsumerWidget {
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: Text(
+          title: const Text(
             'Hasil Scan',
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
           ),
@@ -56,23 +56,23 @@ class ScanResultPage extends ConsumerWidget {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Center(
                   child: Text(
                 (name != "" ? name : "Nama Makanan"),
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
                 textAlign: TextAlign.center,
               )),
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
               Divider(
                 color: graySecond,
                 thickness: 0.6,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
               Text(
@@ -81,7 +81,7 @@ class ScanResultPage extends ConsumerWidget {
                     fontWeight: FontWeight.w600, color: gray, fontSize: 15),
                 textAlign: TextAlign.start,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
               resultAsyncValue.when(
@@ -106,9 +106,9 @@ class ScanResultPage extends ConsumerWidget {
                                           upcId: data[index].upcId)));
                             },
                             child: Container(
-                              margin: EdgeInsets.symmetric(
+                              margin: const EdgeInsets.symmetric(
                                   vertical: 8.0), // Adjust as needed
-                              padding: EdgeInsets.all(16.0), // Adjust as needed
+                              padding: const EdgeInsets.all(16.0), // Adjust as needed
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(8.0),
@@ -117,7 +117,7 @@ class ScanResultPage extends ConsumerWidget {
                               ),
                               child: Row(
                                 children: [
-                                  Container(
+                                  SizedBox(
                                     width: 80.0, // Fixed width for the image
                                     height: 80.0, // Fixed height for the image
                                     child: ClipRRect(
@@ -130,7 +130,7 @@ class ScanResultPage extends ConsumerWidget {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                       width:
                                           16.0), // Add space between image and text
                                   Expanded(
@@ -140,7 +140,7 @@ class ScanResultPage extends ConsumerWidget {
                                       children: [
                                         Text(
                                           foodItem.title,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16.0),
                                         ),
@@ -156,11 +156,11 @@ class ScanResultPage extends ConsumerWidget {
                       ),
                     );
                   } else {
-                    return Text("No additional results available.");
+                    return const Text("No additional results available.");
                   }
                 },
                 loading: () {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 },
                 error: (error, stack) {
                   return Text('Error: $error');

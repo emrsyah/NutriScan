@@ -46,23 +46,21 @@ class _HomePageState extends ConsumerState<HomePage> {
                   onPressed: () {
                     ref.read(authControllerProvider.notifier).signOut(context);
                   },
-                  child: Text("Lgout")),
-              Container(
-                child: TextField(
-                  // onTap: () => {print(_recipes)},
-                  decoration: InputDecoration(
-                    labelText: 'Cari Makanan & Minuman',
-                    hintStyle: TextStyle(color: graySecond),
-                    filled: true,
-                    fillColor: Color.fromARGB(255, 245, 245, 245),
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                          30.0), // Adjust the border radius as needed
-                      borderSide: BorderSide.none, // Remove the border
-                    ),
-                    contentPadding: EdgeInsets.fromLTRB(24, 16, 24, 16),
+                  child: const Text("Lgout")),
+              TextField(
+                // onTap: () => {print(_recipes)},
+                decoration: InputDecoration(
+                  labelText: 'Cari Makanan & Minuman',
+                  hintStyle: TextStyle(color: graySecond),
+                  filled: true,
+                  fillColor: const Color.fromARGB(255, 245, 245, 245),
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(
+                        30.0), // Adjust the border radius as needed
+                    borderSide: BorderSide.none, // Remove the border
                   ),
+                  contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
                 ),
               ),
               // Text(_recipes.length.toString()),
@@ -70,10 +68,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.only(top: 20, bottom: 8),
+                    padding: const EdgeInsets.only(top: 20, bottom: 8),
                     // Wrap with Container
                     width: double.infinity, // Take up the full width
-                    child: Text(
+                    child: const Text(
                       "Rekomendasi Buat Kamu",
                       textAlign: TextAlign.start,
                       style:
@@ -86,7 +84,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 builder: (context, ref, _) {
                   final meals = ref.watch(mealControllerProvider);
                   if (meals.isEmpty) {
-                    return Center(
+                    return const Center(
                       child: Text('No recipes found.'),
                     );
                   } else {
@@ -96,7 +94,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         if (index >= 0 && index < meals.length) {
                           return FoodCard(recipes: meals, index: index, userAllergies: ref.read(authControllerProvider).allergies!,);
                         } else {
-                          return SizedBox.shrink();
+                          return const SizedBox.shrink();
                         }
                       },
                     );
@@ -108,7 +106,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         ),
       ),
       bottomNavigationBar: Container(
-        padding: EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.only(top: 10),
         decoration: BoxDecoration(
           boxShadow: [
             softDrop,
@@ -121,8 +119,8 @@ class _HomePageState extends ConsumerState<HomePage> {
           backgroundColor:
               Colors.white, // Adjust the background color as needed
           iconSize: 28,
-          selectedLabelStyle: TextStyle(fontSize: 14),
-          unselectedLabelStyle: TextStyle(fontSize: 14),
+          selectedLabelStyle: const TextStyle(fontSize: 14),
+          unselectedLabelStyle: const TextStyle(fontSize: 14),
           showUnselectedLabels: true,
           type: BottomNavigationBarType.fixed,
 
@@ -132,11 +130,11 @@ class _HomePageState extends ConsumerState<HomePage> {
           },
 
           items: [
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.home_filled),
               label: 'Beranda',
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.favorite),
               label: 'Favorit',
             ),
@@ -148,11 +146,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                 child: Container(
                   width: 72.0,
                   height: 72.0,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Color(0xFF25A35F), // Background color #25A35F
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.camera_alt_rounded,
                     color: Colors.white,
                     size: 32.0,
@@ -161,11 +159,11 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
               label: '',
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.integration_instructions),
               label: 'Donasi',
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.person),
               label: 'Profil',
             ),

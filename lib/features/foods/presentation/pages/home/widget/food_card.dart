@@ -8,15 +8,14 @@ import 'package:nutriscan/utils/food_utils.dart';
 
 class FoodCard extends StatelessWidget {
   const FoodCard({
-    Key? key,
+    super.key,
     required List<Meal> recipes,
     required int index,
     required Map<String, dynamic>
         userAllergies, // Added userAllergies parameter
   })  : _recipes = recipes,
         _userAllergies = userAllergies, // Assigned to the instance variable
-        index = index,
-        super(key: key);
+        index = index;
 
   final List<Meal> _recipes;
   final int index;
@@ -34,18 +33,18 @@ class FoodCard extends StatelessWidget {
       },
       child: Card(
         surfaceTintColor: Colors.white,
-          color: Color.fromRGBO(255, 255, 255, 1),
+          color: const Color.fromRGBO(255, 255, 255, 1),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
+              SizedBox(
                 width: double.infinity,
                 height: 240.0,
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.only(topRight: Radius.circular(6), topLeft: Radius.circular(6)),
+                      borderRadius: const BorderRadius.only(topRight: Radius.circular(6), topLeft: Radius.circular(6)),
                       child: Image.network(
                         _recipes[index].imgURL ??
                             "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637",
@@ -61,18 +60,17 @@ class FoodCard extends StatelessWidget {
                         child: Container(
                           color: Colors.white,
                           padding:
-                              EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                              const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.timer_outlined),
-                              SizedBox(
+                              const Icon(Icons.timer_outlined),
+                              const SizedBox(
                                 width: 6,
                               ),
                               Text(
-                                _recipes[index].readyInMinutes.toString() +
-                                    " mins",
-                                style: TextStyle(
+                                "${_recipes[index].readyInMinutes} mins",
+                                style: const TextStyle(
                                   fontSize: 14.0,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -86,7 +84,7 @@ class FoodCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 child: Column(
                   // mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,9 +92,9 @@ class FoodCard extends StatelessWidget {
                     Text(
                       _recipes[index].title,
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                          const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 6,
                     ),
                     Row(
@@ -110,7 +108,7 @@ class FoodCard extends StatelessWidget {
                           width: 16,
                           height: 16,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 8,
                         ),
                         RichText(
@@ -141,7 +139,7 @@ class FoodCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 12,
                     ),
                     Row(
@@ -152,7 +150,7 @@ class FoodCard extends StatelessWidget {
                             children: [
                               NutriChip(
                                   label: _recipes[index].mealInfo.labels[idx]),
-                              SizedBox(width: 6.0), // Add space between items
+                              const SizedBox(width: 6.0), // Add space between items
                             ],
                           );
                         },

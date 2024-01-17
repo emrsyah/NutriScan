@@ -50,20 +50,20 @@ class _ScanPageState extends State<ScanPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          padding: EdgeInsets.all(6),
+                          padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               boxShadow: [softDrop],
                               border: softBorder,
                               borderRadius: BorderRadius.circular(6)),
-                          child: Icon(Icons.chevron_left_rounded, size: 32),
+                          child: const Icon(Icons.chevron_left_rounded, size: 32),
                         ),
-                        Text(
+                        const Text(
                           "Scan Makanan",
                           style: TextStyle(
                               fontWeight: FontWeight.w600, fontSize: 18),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 48,
                           height: 48,
                         )
@@ -107,15 +107,15 @@ class _ScanPageState extends State<ScanPage> {
                         } else {
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                               behavior: SnackBarBehavior.floating,
                               content: Text("Teks belum terscan"),
                               backgroundColor: Colors.red,
                             ),
                           );
                         }
-                        print(
-                            'Image captured successfully! Base64: $base64Image');
+                        // print(
+                        //     'Image captured successfully! Base64: $base64Image');
                       },
                     ),
                   ),
@@ -124,7 +124,7 @@ class _ScanPageState extends State<ScanPage> {
             ),
             // Second Section (Fixed height of 240)
             Container(
-              padding: EdgeInsets.only(top: 36, right: 20, left: 20),
+              padding: const EdgeInsets.only(top: 36, right: 20, left: 20),
               height: 240.0,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -152,7 +152,7 @@ class _ScanPageState extends State<ScanPage> {
                                     fontWeight: FontWeight.w500,
                                     color: primary),
                               )
-                            : Text(
+                            : const Text(
                                 "Melakukan Scanning...",
                                 style: TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.w700),
@@ -174,15 +174,15 @@ class _ScanPageState extends State<ScanPage> {
                             ocrState.handleCaptureImage();
                           }
                         },
-                        child: Text(
-                          "Konfirmasi",
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
                         style: OutlinedButton.styleFrom(
                           backgroundColor: primary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(6),
                           ),
+                        ),
+                        child: const Text(
+                          "Konfirmasi",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ),
                     )

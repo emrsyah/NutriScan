@@ -17,7 +17,7 @@ class ScanResulDetailPage extends ConsumerWidget {
           backgroundColor: Colors.white,
           appBar: AppBar(
             backgroundColor: Colors.white,
-            title: Text(
+            title: const Text(
               'Detail Produk',
               style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
             ),
@@ -53,7 +53,7 @@ class ScanResulDetailPage extends ConsumerWidget {
                               fit: BoxFit.cover,
                             )),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 16,
                       ),
                       Center(
@@ -64,7 +64,7 @@ class ScanResulDetailPage extends ConsumerWidget {
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                       ),
-                      SizedBox(height: 20,),
+                      const SizedBox(height: 20,),
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -74,7 +74,7 @@ class ScanResulDetailPage extends ConsumerWidget {
                           border: softBorder,
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 2),
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 2),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -86,14 +86,14 @@ class ScanResulDetailPage extends ConsumerWidget {
                           ],
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 18,
                       ),
                       Divider(color: graySecond, thickness: 0.5),
-                      SizedBox(
+                      const SizedBox(
                         height: 18,
                       ),
-                      Text(
+                      const Text(
                         "Kandungan:",
                         style: TextStyle(
                             fontSize: 16,
@@ -101,7 +101,7 @@ class ScanResulDetailPage extends ConsumerWidget {
                             color: Colors.black87),
                         textAlign: TextAlign.start,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 12,
                       ),
                       Wrap(
@@ -115,10 +115,10 @@ class ScanResulDetailPage extends ConsumerWidget {
                           return NutriChip(label: ings[index]);
                         }),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 24,
                       ),
-                      Text(
+                      const Text(
                         "Tagar:",
                         style: TextStyle(
                             fontSize: 16,
@@ -126,7 +126,7 @@ class ScanResulDetailPage extends ConsumerWidget {
                             color: Colors.black87),
                         textAlign: TextAlign.start,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 12,
                       ),
                       Wrap(
@@ -155,8 +155,7 @@ class NutritionItem extends StatelessWidget {
   final String label;
   final String content;
 
-  const NutritionItem({Key? key, required this.label, required this.content})
-      : super(key: key);
+  const NutritionItem({super.key, required this.label, required this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -164,9 +163,9 @@ class NutritionItem extends StatelessWidget {
       children: [
         Text(
           content,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
-        SizedBox(height: 4.0),
+        const SizedBox(height: 4.0),
         Text(
           label,
           style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: gray),

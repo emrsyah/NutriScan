@@ -17,9 +17,9 @@ class NutriChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: primary
         ),
-        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
         child: Text(label,
-            style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white,fontSize: 13),
+            style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.white,fontSize: 13),
             ),
       ),
     );

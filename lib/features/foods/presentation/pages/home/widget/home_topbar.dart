@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nutriscan/theme.dart';
 
 class HomeTopBar extends StatelessWidget {
-  HomeTopBar({
+  const HomeTopBar({
     super.key,
     required this.name,
   });
@@ -24,7 +24,7 @@ class HomeTopBar extends StatelessWidget {
       // size: 1
     ).build();
     return Container(
-      padding: EdgeInsets.fromLTRB(0, 24, 0, 24),
+      padding: const EdgeInsets.fromLTRB(0, 24, 0, 24),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,11 +32,11 @@ class HomeTopBar extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Selamat Datang 👋",
+              const Text("Selamat Datang 👋",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
               Text(
                 name,
-                style: TextStyle(
+                style: const TextStyle(
                     fontWeight: FontWeight.w500,
                     color: Colors.black45,
                     fontSize: 16),

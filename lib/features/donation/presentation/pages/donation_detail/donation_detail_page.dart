@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:nutriscan/features/donation/data/directions_repository.dart';
+import 'package:nutriscan/features/donation/domain/directions_model.dart';
 import 'package:nutriscan/features/donation/domain/donation_model.dart';
 import 'package:nutriscan/theme.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:geolocator/geolocator.dart';
 
 class DonationDetailPage extends StatefulWidget {
   final DonationModel donation;
@@ -20,6 +23,11 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
   late Marker _origin;
   late Marker _destination;
   String placeName = "";
+  String? _currentAddress;
+  Position? _currentPosition;
+  bool _isLocationSet = false;
+  late Directions _directions;
+
   final _sheet = GlobalKey();
   final _controller = DraggableScrollableController();
 
@@ -63,6 +71,35 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
     );
   }
 
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location services are disabled. Please enable the services')));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions.')));
+      return false;
+    }
+    return true;
+  }
+
   Future<void> initPlaceName() async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
@@ -76,6 +113,36 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
       // Print the place name to the console
     } catch (e) {
       print("Error getting place name: $e");
+    }
+  }
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+    if (!hasPermission) return;
+
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          widget.donation.latitude, widget.donation.longitude);
+
+      final directions = await DirectionsRepository().getDirections(
+          origin: _origin.position,
+          destination: LatLng(position.latitude, position.longitude));
+
+      setState(() {
+        _currentPosition = position;
+        _directions = directions!;
+        _isLocationSet = true;
+        _currentAddress = placemarks.first.street != ""
+            ? ("${placemarks.first.street}, ${placemarks.first.locality}, ${placemarks.first.administrativeArea}")
+            : "Unknown Place";
+      });
+      _googleMapController.animateCamera(
+          CameraUpdate.newLatLngBounds(directions!.bounds, 100.0));
+    } catch (e) {
+      debugPrint('$e');
     }
   }
 
@@ -99,10 +166,28 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
               initialCameraPosition: _initialCamPosition,
               myLocationEnabled: false,
               zoomControlsEnabled: false,
+              polylines: {
+                if (_isLocationSet)
+                  Polyline(
+                      polylineId: PolylineId("overview polylined"),
+                      color: Colors.red,
+                      width: 4,
+                      points: _directions.polylinePoints
+                          .map((e) => LatLng(e.latitude, e.longitude))
+                          .toList())
+              },
               onMapCreated: (controller) => _googleMapController = controller,
               markers: {
                 _origin,
-                if (false) _destination,
+                if (_isLocationSet)
+                  Marker(
+                    markerId: const MarkerId("navigation"),
+                    position: LatLng(_currentPosition!.latitude,
+                        _currentPosition!.longitude),
+                    infoWindow: const InfoWindow(title: "Posisi Kamu"),
+                    icon: BitmapDescriptor.defaultMarkerWithHue(
+                        BitmapDescriptor.hueAzure),
+                  ),
               },
             ),
             Positioned(
@@ -118,20 +203,52 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                       Navigator.of(context).pop();
                     },
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Text(
-                      "Set Your Location",
-                      style: TextStyle(
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.bold,
-                          color: primary),
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: _getCurrentPosition,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0),
+                          decoration: BoxDecoration(
+                            color: _isLocationSet ? primary : Colors.white,
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: Text(
+                            _isLocationSet
+                                ? "Lokasi Sudah Menyala"
+                                : "Set Your Location",
+                            style: TextStyle(
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.bold,
+                                color: _isLocationSet ? Colors.white : primary),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      if (_isLocationSet)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 6.0,
+                            horizontal: 12.0,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20.0),
+                            boxShadow: [softDrop],
+                          ),
+                          child: Text(
+                            '${_directions.totalDistance}, ${_directions.totalDuration}',
+                            style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w600,
+                                color: primary),
+                          ),
+                        ),
+                    ],
                   ),
                 ],
               ),
@@ -266,7 +383,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 12,
                                 ),
                                 Center(
@@ -309,10 +426,17 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                                         ),
                                       ),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
-                                          Icon(Icons.copy,size: 18, color: primary,),
-                                          SizedBox(width: 8,),
+                                          Icon(
+                                            Icons.copy,
+                                            size: 18,
+                                            color: primary,
+                                          ),
+                                          const SizedBox(
+                                            width: 8,
+                                          ),
                                           Text(
                                             'Hubungi Pendonasi ${widget.donation.phone}',
                                             style: TextStyle(
@@ -342,9 +466,14 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
           backgroundColor: Colors.white,
           foregroundColor: primary,
           onPressed: () {
-            _googleMapController.animateCamera(
-              CameraUpdate.newCameraPosition(_initialCamPosition),
-            );
+            if (_isLocationSet) {
+              _googleMapController.animateCamera(
+                  CameraUpdate.newLatLngBounds(_directions.bounds, 100.0));
+            } else {
+              _googleMapController.animateCamera(
+                CameraUpdate.newCameraPosition(_initialCamPosition),
+              );
+            }
           },
           child: const Icon(Icons.center_focus_strong_rounded),
         ),
@@ -352,117 +481,3 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
     );
   }
 }
-
-
-
-
-
-            // DraggableScrollableSheet(
-            //   key: _sheet,
-            //   snap: true,
-            //   expand: true,
-            //   snapSizes: [0.5],
-            //   controller: _controller,
-            //   initialChildSize: 0.2,
-            //   maxChildSize: 1.0,
-            //   minChildSize: 0.1,
-            //   builder:
-            //       (BuildContext context, ScrollController scrollController) {
-            //     return Container(
-            //       decoration: BoxDecoration(
-            //         color: Colors.white,
-            //         borderRadius: const BorderRadius.only(
-            //           topLeft: Radius.circular(20.0),
-            //           topRight: Radius.circular(20.0),
-            //         ),
-            //         boxShadow: [
-            //           BoxShadow(
-            //             color: Colors.grey.withOpacity(0.5),
-            //             spreadRadius: 5,
-            //             blurRadius: 7,
-            //             offset: Offset(0, 3),
-            //           ),
-            //         ],
-            //       ),
-            //       child: Padding(
-            //         padding: const EdgeInsets.symmetric(
-            //             vertical: 12, horizontal: 20),
-            //         child: Column(children: [
-            //           Center(
-            //             child: Container(
-            //               height: 5,
-            //               width: 200,
-            //               decoration: BoxDecoration(
-            //                   color: graySecond,
-            //                   borderRadius: BorderRadius.circular(6)),
-            //             ),
-            //           ),
-            //           const SizedBox(
-            //             height: 32,
-            //           ),
-            //           Row(
-            //             children: [
-            //               SizedBox(
-            //                 width: 80.0, // Fixed width for the image
-            //                 height: 80.0, // Fixed height for the image
-            //                 child: ClipRRect(
-            //                   borderRadius: BorderRadius.circular(8.0),
-            //                   child: Image.network(
-            //                     widget.donation.image,
-            //                     width: double.infinity,
-            //                     height: double.infinity,
-            //                     fit: BoxFit.cover,
-            //                   ),
-            //                 ),
-            //               ),
-            //               const SizedBox(
-            //                   width: 16.0), // Add space between image and text
-            //               Expanded(
-            //                 child: Column(
-            //                   crossAxisAlignment: CrossAxisAlignment.start,
-            //                   children: [
-            //                     Text(
-            //                       widget.donation.title,
-            //                       style: const TextStyle(
-            //                           fontWeight: FontWeight.bold,
-            //                           fontSize: 20.0),
-            //                     ),
-            //                     SizedBox(
-            //                       height: 4,
-            //                     ),
-            //                     Text(
-            //                       placeName,
-            //                       style: TextStyle(
-            //                           fontWeight: FontWeight.w500, color: gray),
-            //                     ),
-            //                     // Add more Text widgets or other UI elements as needed
-            //                     SizedBox(
-            //                       height: 12,
-            //                     ),
-            //                   ],
-            //                 ),
-            //               ),
-            //             ],
-            //           ),
-            //           Divider(
-            //             height: 3,
-            //             color: gray,
-            //           ),
-            //           SizedBox(
-            //             height: 12,
-            //           ),
-            //         ]),
-            //       ),
-            //       // child: ListView.builder(
-            //       //   controller: scrollController,
-            //       //   itemCount: 10, // Change this as needed
-            //       //   itemBuilder: (BuildContext context, int index) {
-            //       //     // Add your content for the bottom sheet here
-            //       //     return ListTile(
-            //       //       title: Text('Item $index'),
-            //       //     );
-            //       //   },
-            //       // ),
-            //     );
-            //   },
-            // ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nutriscan/features/donation/presentation/pages/donation_controller.dart';
+import 'package:nutriscan/features/donation/presentation/pages/donation_detail/donation_detail_page.dart';
 import 'package:nutriscan/features/foods/presentation/pages/common_widget/BottomNavigation.dart';
 import 'package:nutriscan/theme.dart';
 
@@ -95,101 +96,123 @@ class DonationPage extends ConsumerWidget {
                                     itemCount: data.length,
                                     itemBuilder: (context, index) {
                                       final donation = data[index];
-                                      return Card(
-                                          surfaceTintColor: Colors.white,
-                                          color: const Color.fromRGBO(
-                                              255, 255, 255, 1),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                width: double.infinity,
-                                                height: 180.0,
-                                                child: Stack(
-                                                  fit: StackFit.expand,
-                                                  children: [
-                                                    ClipRRect(
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                              .only(
-                                                              topRight: Radius
-                                                                  .circular(6),
-                                                              topLeft: Radius
-                                                                  .circular(6)),
-                                                      child: Image.network(
-                                                       donation.image ??
-                                                            "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637",
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                    Positioned(
-                                                      right: 12.0,
-                                                      top: 12.0,
-                                                      child: ClipRRect(
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DonationDetailPage(
+                                                          donation: donation)));
+                                        },
+                                        child: Card(
+                                            surfaceTintColor: Colors.white,
+                                            color: const Color.fromRGBO(
+                                                255, 255, 255, 1),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(
+                                                  width: double.infinity,
+                                                  height: 180.0,
+                                                  child: Stack(
+                                                    fit: StackFit.expand,
+                                                    children: [
+                                                      ClipRRect(
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                100.0), // Adjust the radius as needed
-                                                        child: Container(
-                                                          color: Colors.white,
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  vertical: 6,
-                                                                  horizontal:
-                                                                      12),
-                                                          child: const Row(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            children: [
-                                                              Icon(Icons
-                                                                  .location_on_outlined),
-                                                              SizedBox(
-                                                                width: 6,
-                                                              ),
-                                                              Text(
-                                                                "- km",
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize:
-                                                                      14.0,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
+                                                            const BorderRadius
+                                                                .only(
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        6),
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        6)),
+                                                        child: Image.network(
+                                                          donation.image ??
+                                                              "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637",
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                      Positioned(
+                                                        right: 12.0,
+                                                        top: 12.0,
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                  100.0), // Adjust the radius as needed
+                                                          child: Container(
+                                                            decoration: BoxDecoration(
+                                                                border:
+                                                                    softBorder,
+                                                                color: Colors
+                                                                    .white,
+                                                                boxShadow: [
+                                                                  softDrop
+                                                                ]),
+                                                            // color: Colors.white,
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                                    vertical: 4,
+                                                                    horizontal:
+                                                                        12),
+                                                            child: const Row(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              children: [
+                                                                Icon(Icons
+                                                                    .location_on_outlined),
+                                                                SizedBox(
+                                                                  width: 6,
                                                                 ),
-                                                              ),
-                                                            ],
+                                                                Text(
+                                                                  "- km",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        14.0,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 12,
-                                                        horizontal: 16),
-                                                child: Column(
-                                                  // mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      donation.title,
-                                                      style: const TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.w700),
-                                                    ),
-                                                  // ! NANTI KALO SEMPAT TAMBAHIN STATUS AMAN KONSUMSI
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ));
+                                                Container(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      vertical: 12,
+                                                      horizontal: 16),
+                                                  child: Column(
+                                                    // mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        donation.title,
+                                                        style: const TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w700),
+                                                      ),
+                                                      // ! NANTI KALO SEMPAT TAMBAHIN STATUS AMAN KONSUMSI
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            )),
+                                      );
                                     },
                                   ));
                                 } else {

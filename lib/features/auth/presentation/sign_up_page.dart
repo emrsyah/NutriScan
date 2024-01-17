@@ -187,16 +187,16 @@ class _SignUpState extends ConsumerState<SignUpPage> {
                                           _passwordController.text);
                                 }
                               },
-                              child: Text(
-                                'Daftar Sekarang',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                              ),
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: primary,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(6),
                                 ),
+                              ),
+                              child: const Text(
+                                'Daftar Sekarang',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
                               ),
                             ),
                           ),

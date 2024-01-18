@@ -42,11 +42,11 @@ class _HomePageState extends ConsumerState<HomePage> {
           child: Column(
             children: [
               HomeTopBar(name: ref.read(authControllerProvider).name),
-              // TextButton(
-              //     onPressed: () {
-              //       ref.read(authControllerProvider.notifier).signOut(context);
-              //     },
-              //     child: const Text("Lgout")),
+              TextButton(
+                  onPressed: () {
+                    ref.read(authControllerProvider.notifier).signOut(context);
+                  },
+                  child: const Text("Lgout")),
               TextField(
                 // onTap: () => {print(_recipes)},
                 decoration: InputDecoration(

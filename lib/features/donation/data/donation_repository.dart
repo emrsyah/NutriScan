@@ -10,4 +10,11 @@ class DonationRepository{
     return donations;
   }
 
+  Future<void> sendFoodRequest(String docId, List<dynamic> currentRequests, dynamic requesterData) async {
+    List<dynamic> newRequests = [...currentRequests, requesterData];
+    await donationDb.doc(docId).update({
+      "requests" : newRequests
+    });
+  }
+
 }

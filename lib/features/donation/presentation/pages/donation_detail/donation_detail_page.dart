@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:nutriscan/features/auth/presentation/auth_controller.dart';
 import 'package:nutriscan/features/donation/data/directions_repository.dart';
 import 'package:nutriscan/features/donation/domain/directions_model.dart';
 import 'package:nutriscan/features/donation/domain/donation_model.dart';
+import 'package:nutriscan/features/donation/presentation/pages/donation_detail/donation_detail_controller.dart';
 import 'package:nutriscan/features/donation/utils/gmaps_utils.dart';
 import 'package:nutriscan/theme.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:geolocator/geolocator.dart';
 
-class DonationDetailPage extends StatefulWidget {
+class DonationDetailPage extends ConsumerStatefulWidget {
   final DonationModel donation;
   final Position? previousPosition;
 
@@ -17,10 +20,10 @@ class DonationDetailPage extends StatefulWidget {
       {super.key, required this.donation, this.previousPosition});
 
   @override
-  State<DonationDetailPage> createState() => _DonationDetailPageState();
+  ConsumerState<DonationDetailPage> createState() => _DonationDetailPageState();
 }
 
-class _DonationDetailPageState extends State<DonationDetailPage> {
+class _DonationDetailPageState extends ConsumerState<DonationDetailPage> {
   late GoogleMapController _googleMapController;
   late CameraPosition _initialCamPosition;
   late Marker _origin;
@@ -29,6 +32,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
   String? _currentAddress;
   Position? _currentPosition;
   bool _isLocationSet = false;
+  bool _isRequestSent = false;
   late Directions _directions;
 
   final _sheet = GlobalKey();
@@ -156,6 +160,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.read(authControllerProvider);
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -216,7 +221,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                           child: Text(
                             _isLocationSet
                                 ? "Lokasi Sudah Menyala"
-                                : "Set Your Location",
+                                : "Set Lokasi Kamu",
                             style: TextStyle(
                                 fontSize: 15.0,
                                 fontWeight: FontWeight.bold,
@@ -365,7 +370,21 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                                     width: double.infinity,
                                     height: 48,
                                     child: TextButton(
-                                      onPressed: () async {},
+                                      onPressed: () async {
+                                        if (_isRequestSent) return;
+                                        await ref
+                                            .read(
+                                                donationDetailControllerProvider
+                                                    .notifier)
+                                            .sendDonationRequest(
+                                                context,
+                                                widget.donation.id,
+                                                widget.donation.requests, {
+                                          "user_id": user.uid,
+                                          "name": user.name,
+                                          "email": user.email
+                                        });
+                                      },
                                       style: OutlinedButton.styleFrom(
                                         backgroundColor: primary,
                                         shape: RoundedRectangleBorder(
@@ -373,9 +392,11 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                                               BorderRadius.circular(6),
                                         ),
                                       ),
-                                      child: const Text(
-                                        'Kirimkan Request',
-                                        style: TextStyle(
+                                      child: Text(
+                                        _isRequestSent
+                                            ? 'Request Telah Dikirim'
+                                            : "Kirimkan Request",
+                                        style: const TextStyle(
                                             color: Colors.white, fontSize: 16),
                                       ),
                                     ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nutriscan/features/donation/data/directions_repository.dart';
 import 'package:nutriscan/features/donation/domain/directions_model.dart';
@@ -357,8 +358,33 @@ class _DonationPageState extends ConsumerState<DonationPage> {
                             )
                           ],
                         ),
-                        // Column(),
-                        Text("data2")
+                        Column(
+                          children: [
+                            GestureDetector(
+                              onTap: (){
+                                context.pushNamed("add-donation");
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 12),
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: primary, width: 1),
+                                    borderRadius: BorderRadius.circular(6)),
+                                child:  Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.add, size:24, color: primary,),
+                                    SizedBox(width:8 ,),
+                                    Text("Tambah Donasi", style: TextStyle(color: primary, fontWeight: FontWeight.w500, fontSize: 16),)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        // ColoredBox(color: color)
                       ]),
                     ),
                   )
@@ -395,5 +421,5 @@ String calculateDistance(lat1, lon1, lat2, lon2) {
 Future<String> getFoodDirections(lat1, lon1, lat2, lon2) async {
   Directions? directions = await DirectionsRepository().getDirections(
       origin: LatLng(lat1, lon1), destination: LatLng(lat2, lon2));
-  return directions != null ?  directions.totalDistance : "-";
+  return directions != null ? directions.totalDistance : "-";
 }

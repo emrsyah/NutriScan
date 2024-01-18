@@ -3,6 +3,7 @@ import 'package:nutriscan/features/auth/presentation/onboarding_finishing_page.d
 import 'package:nutriscan/features/auth/presentation/sign_in_page.dart';
 import 'package:nutriscan/features/auth/presentation/sign_up_page.dart';
 import 'package:nutriscan/features/common/presentation/pages/splash_page.dart';
+import 'package:nutriscan/features/donation/presentation/pages/add_donation/add_donation_page.dart';
 import 'package:nutriscan/features/donation/presentation/pages/donation_page.dart';
 import 'package:nutriscan/features/foods/presentation/pages/food_detail/food_detail_page.dart';
 import 'package:nutriscan/features/foods/presentation/pages/home/home_page.dart';
@@ -58,6 +59,11 @@ final app_router = GoRouter(
       name: 'donation',
       path: '/donation',
       builder: (context, state) => DonationPage(),
+    ),
+    GoRoute(
+      name: 'add-donation',
+      path: '/add-donation',
+      builder: (context, state) => AddDonationPage(),
     ),
   ],
 );

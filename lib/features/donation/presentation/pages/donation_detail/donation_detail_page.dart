@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nutriscan/features/donation/data/directions_repository.dart';
 import 'package:nutriscan/features/donation/domain/directions_model.dart';
 import 'package:nutriscan/features/donation/domain/donation_model.dart';
+import 'package:nutriscan/features/donation/utils/gmaps_utils.dart';
 import 'package:nutriscan/theme.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:clipboard/clipboard.dart';
@@ -10,8 +11,10 @@ import 'package:geolocator/geolocator.dart';
 
 class DonationDetailPage extends StatefulWidget {
   final DonationModel donation;
+  final Position? previousPosition;
 
-  const DonationDetailPage({super.key, required this.donation});
+  const DonationDetailPage(
+      {super.key, required this.donation, this.previousPosition});
 
   @override
   State<DonationDetailPage> createState() => _DonationDetailPageState();
@@ -47,7 +50,33 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
 
     _controller.addListener(_onChanged);
 
+    initCurrentPlaceFromBefore();
     initPlaceName();
+  }
+
+  Future<void> initCurrentPlaceFromBefore() async {
+    if (widget.previousPosition != null) {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          widget.previousPosition!.latitude,
+          widget.previousPosition!.longitude);
+
+      final directions = await DirectionsRepository().getDirections(
+          origin: _origin.position,
+          destination: LatLng(widget.previousPosition!.latitude,
+              widget.previousPosition!.longitude));
+
+      setState(() {
+        _currentPosition = widget.previousPosition;
+        _directions = directions!;
+        _isLocationSet = true;
+        _currentAddress = placemarks.first.street != ""
+            ? ("${placemarks.first.street}, ${placemarks.first.locality}, ${placemarks.first.administrativeArea}")
+            : "Unknown Place";
+      });
+
+      _googleMapController.animateCamera(
+          CameraUpdate.newLatLngBounds(directions!.bounds, 100.0));
+    }
   }
 
   void _onChanged() {
@@ -71,35 +100,6 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
     );
   }
 
-  Future<bool> _handleLocationPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location services are disabled. Please enable the services')));
-      return false;
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permissions are denied')));
-        return false;
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location permissions are permanently denied, we cannot request permissions.')));
-      return false;
-    }
-    return true;
-  }
-
   Future<void> initPlaceName() async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
@@ -109,23 +109,21 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
             ? ("${placemarks.first.street}, ${placemarks.first.locality}, ${placemarks.first.administrativeArea}")
             : "Unknown Place";
       });
-      // For now, using a placeholder value
-      // Print the place name to the console
     } catch (e) {
       print("Error getting place name: $e");
     }
   }
 
   Future<void> _getCurrentPosition() async {
-    final hasPermission = await _handleLocationPermission();
+    final hasPermission = await handleLocationPermission(context);
     if (!hasPermission) return;
 
     try {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
 
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-          widget.donation.latitude, widget.donation.longitude);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
 
       final directions = await DirectionsRepository().getDirections(
           origin: _origin.position,

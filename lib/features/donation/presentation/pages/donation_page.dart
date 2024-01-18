@@ -1,15 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:nutriscan/features/donation/data/directions_repository.dart';
+import 'package:nutriscan/features/donation/domain/directions_model.dart';
 import 'package:nutriscan/features/donation/presentation/pages/donation_controller.dart';
 import 'package:nutriscan/features/donation/presentation/pages/donation_detail/donation_detail_page.dart';
+import 'package:nutriscan/features/donation/utils/gmaps_utils.dart';
 import 'package:nutriscan/features/foods/presentation/pages/common_widget/BottomNavigation.dart';
 import 'package:nutriscan/theme.dart';
+import 'dart:math';
 
-class DonationPage extends ConsumerWidget {
+class DonationPage extends ConsumerStatefulWidget {
   const DonationPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _DonationPageState();
+}
+
+class _DonationPageState extends ConsumerState<DonationPage> {
+  late Position _currentPosition;
+  bool _isLocationSet = false;
+  late String _currentAddress;
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await handleLocationPermission(context);
+    if (!hasPermission) return;
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+
+      setState(() {
+        _currentAddress = placemarks.first.street != ""
+            ? ("${placemarks.first.street}, ${placemarks.first.locality}, ${placemarks.first.administrativeArea}")
+            : "Unknown Place";
+        _currentPosition = position;
+        _isLocationSet = true;
+      });
+    } catch (e) {
+      debugPrint('$e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final resultAsyncValue = ref.watch(FindDonationProvider(""));
     return SafeArea(
         child: Scaffold(
@@ -58,7 +96,7 @@ class DonationPage extends ConsumerWidget {
                           child: Text("Provide"),
                         )),
                       ]),
-                  SizedBox(
+                  const SizedBox(
                     height: 24,
                   ),
                   Expanded(
@@ -73,15 +111,44 @@ class DonationPage extends ConsumerWidget {
                                   vertical: 6, horizontal: 12),
                               width: double.infinity,
                               decoration: BoxDecoration(
+                                  color:
+                                      _isLocationSet ? primary : Colors.white,
                                   border: softBorder,
-                                  borderRadius: BorderRadius.circular(4)),
+                                  borderRadius: BorderRadius.circular(6)),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("Lokasi: Margacinta, Bandung"),
+                                  Expanded(
+                                    child: Text(
+                                      _isLocationSet
+                                          ? _currentAddress
+                                          : "Lokasi belum ditentukan",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 15,
+                                          color: _isLocationSet
+                                              ? Colors.white
+                                              : Colors.black),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
                                   TextButton(
-                                      onPressed: () {}, child: Text("Ganti"))
+                                    onPressed: () {
+                                      _getCurrentPosition();
+                                    },
+                                    child: Text(
+                                      _isLocationSet
+                                          ? "Lokasi Menyala"
+                                          : "Set Lokasi",
+                                      style: TextStyle(
+                                          color: _isLocationSet
+                                              ? Colors.white
+                                              : primary,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  )
                                 ],
                               ),
                             ),
@@ -103,7 +170,12 @@ class DonationPage extends ConsumerWidget {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       DonationDetailPage(
-                                                          donation: donation)));
+                                                        donation: donation,
+                                                        previousPosition:
+                                                            _isLocationSet
+                                                                ? _currentPosition
+                                                                : null,
+                                                      )));
                                         },
                                         child: Card(
                                             surfaceTintColor: Colors.white,
@@ -158,7 +230,7 @@ class DonationPage extends ConsumerWidget {
                                                                     vertical: 4,
                                                                     horizontal:
                                                                         12),
-                                                            child: const Row(
+                                                            child: Row(
                                                               mainAxisSize:
                                                                   MainAxisSize
                                                                       .min,
@@ -168,17 +240,37 @@ class DonationPage extends ConsumerWidget {
                                                                 SizedBox(
                                                                   width: 6,
                                                                 ),
-                                                                Text(
-                                                                  "- km",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        14.0,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  ),
-                                                                ),
+                                                                FutureBuilder<
+                                                                    String>(
+                                                                  future: _isLocationSet
+                                                                      ? getFoodDirections(
+                                                                          _currentPosition
+                                                                              .latitude,
+                                                                          _currentPosition
+                                                                              .longitude,
+                                                                          donation
+                                                                              .latitude,
+                                                                          donation
+                                                                              .longitude,
+                                                                        )
+                                                                      : Future.value("- km"),
+                                                                  builder: (context,
+                                                                      AsyncSnapshot<
+                                                                              String>
+                                                                          snapshot) {
+                                                                    return Text(
+                                                                      snapshot.data ??
+                                                                          "- km",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            14.0,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                )
                                                               ],
                                                             ),
                                                           ),
@@ -207,6 +299,39 @@ class DonationPage extends ConsumerWidget {
                                                                     .w700),
                                                       ),
                                                       // ! NANTI KALO SEMPAT TAMBAHIN STATUS AMAN KONSUMSI
+                                                      FutureBuilder(
+                                                        future: getPlaceName(
+                                                            donation.latitude,
+                                                            donation.longitude),
+                                                        builder: (context,
+                                                            AsyncSnapshot<
+                                                                    String>
+                                                                snapshot) {
+                                                          switch (snapshot
+                                                              .connectionState) {
+                                                            case ConnectionState
+                                                                  .none:
+                                                              return const Text(
+                                                                  'Press button to start.');
+                                                            case ConnectionState
+                                                                  .active:
+                                                            case ConnectionState
+                                                                  .waiting:
+                                                              return const Text(
+                                                                  'Awaiting result...');
+                                                            case ConnectionState
+                                                                  .done:
+                                                              if (snapshot
+                                                                  .hasError) {
+                                                                return Text(
+                                                                    'Error: ${snapshot.error}');
+                                                              }
+                                                              return Text(snapshot
+                                                                      .data ??
+                                                                  'No place name available');
+                                                          }
+                                                        },
+                                                      )
                                                     ],
                                                   ),
                                                 )
@@ -242,4 +367,33 @@ class DonationPage extends ConsumerWidget {
       bottomNavigationBar: const BottomNavigation(idx: 3),
     ));
   }
+}
+
+Future<String> getPlaceName(lat, long) async {
+  try {
+    List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+    String placeName = placemarks.first.street != ""
+        ? ("${placemarks.first.street}, ${placemarks.first.locality}, ${placemarks.first.administrativeArea}")
+        : "Unknown Place";
+    return placeName;
+    // For now, using a placeholder value
+    // Print the place name to the console
+  } catch (e) {
+    print("Error getting place name: $e");
+    return "Can't get place name";
+  }
+}
+
+String calculateDistance(lat1, lon1, lat2, lon2) {
+  var p = 0.017453292519943295;
+  var a = 0.5 -
+      cos((lat2 - lat1) * p) / 2 +
+      cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2;
+  return (12742 * asin(sqrt(a))).toStringAsFixed(2) + " km";
+}
+
+Future<String> getFoodDirections(lat1, lon1, lat2, lon2) async {
+  Directions? directions = await DirectionsRepository().getDirections(
+      origin: LatLng(lat1, lon1), destination: LatLng(lat2, lon2));
+  return directions != null ?  directions.totalDistance : "-";
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 import 'package:nutriscan/features/auth/presentation/auth_controller.dart';
 import 'package:nutriscan/features/foods/presentation/pages/common_widget/BottomNavigation.dart';
@@ -43,11 +42,11 @@ class _HomePageState extends ConsumerState<HomePage> {
           child: Column(
             children: [
               HomeTopBar(name: ref.read(authControllerProvider).name),
-              TextButton(
-                  onPressed: () {
-                    ref.read(authControllerProvider.notifier).signOut(context);
-                  },
-                  child: const Text("Lgout")),
+              // TextButton(
+              //     onPressed: () {
+              //       ref.read(authControllerProvider.notifier).signOut(context);
+              //     },
+              //     child: const Text("Lgout")),
               TextField(
                 // onTap: () => {print(_recipes)},
                 decoration: InputDecoration(

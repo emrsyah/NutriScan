@@ -8,3 +8,10 @@ final FindDonationProvider =
   // return mealRepository.getFoodsFromScan(name);
   return donationRepository.getDonations();
 });
+
+final FindMyDonationProvider =
+    FutureProvider.family<List<DonationModel>, String>((ref, userId) async {
+  final donationRepository = ref.read(donationRepositoryProvider);
+  // return mealRepository.getFoodsFromScan(name);
+  return donationRepository.getMyDonations(userId);
+});

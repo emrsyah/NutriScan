@@ -82,11 +82,11 @@ class ScanResulDetailPage extends ConsumerWidget {
                             NutritionItem(label: 'Carbs', content: data.carbs),
                             NutritionItem(
                                 label: 'Protein', content: data.protein),
-                            NutritionItem(label: 'Fat', content: data.fat),
+                            NutritionItem(label: 'Fat', content: data.fat.contains(".") ? data.fat.split(".")[0] : data.fat),
                             NutritionItem(
                                 label: 'Calories',
                                 content: data.calories != null
-                                    ? '${data.calories} kcal'
+                                    ? '${data.calories!.toStringAsFixed(0)} kcal'
                                     : '-'),
                           ],
                         ),

@@ -4,10 +4,12 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:nutriscan/features/auth/presentation/auth_controller.dart';
 import 'package:nutriscan/features/donation/data/directions_repository.dart';
 import 'package:nutriscan/features/donation/domain/directions_model.dart';
 import 'package:nutriscan/features/donation/presentation/pages/donation_controller.dart';
 import 'package:nutriscan/features/donation/presentation/pages/donation_detail/donation_detail_page.dart';
+import 'package:nutriscan/features/donation/presentation/pages/my_donation_detail/my_donation_detail_page.dart';
 import 'package:nutriscan/features/donation/utils/gmaps_utils.dart';
 import 'package:nutriscan/features/foods/presentation/pages/common_widget/BottomNavigation.dart';
 import 'package:nutriscan/theme.dart';
@@ -50,10 +52,18 @@ class _DonationPageState extends ConsumerState<DonationPage> {
   @override
   Widget build(BuildContext context) {
     final resultAsyncValue = ref.watch(FindDonationProvider(""));
+    final resultAsyncValueMyDonation = ref
+        .watch(FindMyDonationProvider(ref.read(authControllerProvider).uid!));
     return SafeArea(
         child: Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Icon(Icons.inbox_rounded),
+            )
+          ],
           backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           title: const Text(
@@ -160,186 +170,187 @@ class _DonationPageState extends ConsumerState<DonationPage> {
                               data: (data) {
                                 if (data.isNotEmpty) {
                                   return Expanded(
-                                      child: ListView.builder(
-                                    itemCount: data.length,
-                                    itemBuilder: (context, index) {
-                                      final donation = data[index];
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      DonationDetailPage(
-                                                        donation: donation,
-                                                        previousPosition:
-                                                            _isLocationSet
-                                                                ? _currentPosition
-                                                                : null,
-                                                      )));
-                                        },
-                                        child: Card(
-                                            surfaceTintColor: Colors.white,
-                                            color: const Color.fromRGBO(
-                                                255, 255, 255, 1),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
-                                                  width: double.infinity,
-                                                  height: 180.0,
-                                                  child: Stack(
-                                                    fit: StackFit.expand,
-                                                    children: [
-                                                      ClipRRect(
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .only(
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        6),
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        6)),
-                                                        child: Image.network(
-                                                          donation.image ??
-                                                              "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637",
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        right: 12.0,
-                                                        top: 12.0,
-                                                        child: ClipRRect(
+                                      child: RefreshIndicator(
+                                    onRefresh: () => ref.refresh(
+                                        FindDonationProvider("").future),
+                                    child: ListView.builder(
+                                      itemCount: data.length,
+                                      itemBuilder: (context, index) {
+                                        final donation = data[index];
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DonationDetailPage(
+                                                          donation: donation,
+                                                          previousPosition:
+                                                              _isLocationSet
+                                                                  ? _currentPosition
+                                                                  : null,
+                                                        )));
+                                          },
+                                          child: Card(
+                                              surfaceTintColor: Colors.white,
+                                              color: const Color.fromRGBO(
+                                                  255, 255, 255, 1),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(
+                                                    width: double.infinity,
+                                                    height: 180.0,
+                                                    child: Stack(
+                                                      fit: StackFit.expand,
+                                                      children: [
+                                                        ClipRRect(
                                                           borderRadius:
-                                                              BorderRadius.circular(
-                                                                  100.0), // Adjust the radius as needed
-                                                          child: Container(
-                                                            decoration: BoxDecoration(
-                                                                border:
-                                                                    softBorder,
-                                                                color: Colors
-                                                                    .white,
-                                                                boxShadow: [
-                                                                  softDrop
-                                                                ]),
-                                                            // color: Colors.white,
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    vertical: 4,
-                                                                    horizontal:
-                                                                        12),
-                                                            child: Row(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                Icon(Icons
-                                                                    .location_on_outlined),
-                                                                SizedBox(
-                                                                  width: 6,
-                                                                ),
-                                                                FutureBuilder<
-                                                                    String>(
-                                                                  future: _isLocationSet
-                                                                      ? getFoodDirections(
-                                                                          _currentPosition
-                                                                              .latitude,
-                                                                          _currentPosition
-                                                                              .longitude,
-                                                                          donation
-                                                                              .latitude,
-                                                                          donation
-                                                                              .longitude,
-                                                                        )
-                                                                      : Future.value("- km"),
-                                                                  builder: (context,
-                                                                      AsyncSnapshot<
-                                                                              String>
-                                                                          snapshot) {
-                                                                    return Text(
-                                                                      snapshot.data ??
-                                                                          "- km",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            14.0,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    );
-                                                                  },
-                                                                )
-                                                              ],
+                                                              const BorderRadius
+                                                                  .only(
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          6),
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          6)),
+                                                          child: Image.network(
+                                                            donation.image ??
+                                                                "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637",
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
+                                                        Positioned(
+                                                          right: 12.0,
+                                                          top: 12.0,
+                                                          child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        100.0), // Adjust the radius as needed
+                                                            child: Container(
+                                                              decoration: BoxDecoration(
+                                                                  border:
+                                                                      softBorder,
+                                                                  color: Colors.white,
+                                                                  boxShadow: [
+                                                                    softDrop
+                                                                  ]),
+                                                              // color: Colors.white,
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      vertical:
+                                                                          4,
+                                                                      horizontal:
+                                                                          12),
+                                                              child: Row(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  Icon(Icons
+                                                                      .location_on_outlined),
+                                                                  SizedBox(
+                                                                    width: 6,
+                                                                  ),
+                                                                  FutureBuilder<
+                                                                      String>(
+                                                                    future: _isLocationSet
+                                                                        ? getFoodDirections(
+                                                                            _currentPosition.latitude,
+                                                                            _currentPosition.longitude,
+                                                                            donation.latitude,
+                                                                            donation.longitude,
+                                                                          )
+                                                                        : Future.value("- km"),
+                                                                    builder: (context,
+                                                                        AsyncSnapshot<String>
+                                                                            snapshot) {
+                                                                      return Text(
+                                                                        snapshot.data ??
+                                                                            "- km",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              14.0,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  )
+                                                                ],
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                                Container(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      vertical: 12,
-                                                      horizontal: 16),
-                                                  child: Column(
-                                                    // mainAxisAlignment: MainAxisAlignment.start,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        donation.title,
-                                                        style: const TextStyle(
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w700),
-                                                      ),
-                                                      // ! NANTI KALO SEMPAT TAMBAHIN STATUS AMAN KONSUMSI
-                                                      FutureBuilder(
-                                                        future: getPlaceName(
-                                                            donation.latitude,
-                                                            donation.longitude),
-                                                        builder: (context,
-                                                            AsyncSnapshot<
-                                                                    String>
-                                                                snapshot) {
-                                                          switch (snapshot
-                                                              .connectionState) {
-                                                            case ConnectionState
-                                                                  .none:
-                                                              return const Text(
-                                                                  'Press button to start.');
-                                                            case ConnectionState
-                                                                  .active:
-                                                            case ConnectionState
-                                                                  .waiting:
-                                                              return const Text(
-                                                                  'Awaiting result...');
-                                                            case ConnectionState
-                                                                  .done:
-                                                              if (snapshot
-                                                                  .hasError) {
-                                                                return Text(
-                                                                    'Error: ${snapshot.error}');
-                                                              }
-                                                              return Text(snapshot
-                                                                      .data ??
-                                                                  'No place name available');
-                                                          }
-                                                        },
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            )),
-                                      );
-                                    },
+                                                  Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 12,
+                                                        horizontal: 16),
+                                                    child: Column(
+                                                      // mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          donation.title,
+                                                          style: const TextStyle(
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700),
+                                                        ),
+                                                        // ! NANTI KALO SEMPAT TAMBAHIN STATUS AMAN KONSUMSI
+                                                        FutureBuilder(
+                                                          future: getPlaceName(
+                                                              donation.latitude,
+                                                              donation
+                                                                  .longitude),
+                                                          builder: (context,
+                                                              AsyncSnapshot<
+                                                                      String>
+                                                                  snapshot) {
+                                                            switch (snapshot
+                                                                .connectionState) {
+                                                              case ConnectionState
+                                                                    .none:
+                                                                return const Text(
+                                                                    'Press button to start.');
+                                                              case ConnectionState
+                                                                    .active:
+                                                              case ConnectionState
+                                                                    .waiting:
+                                                                return const Text(
+                                                                    'Awaiting result...');
+                                                              case ConnectionState
+                                                                    .done:
+                                                                if (snapshot
+                                                                    .hasError) {
+                                                                  return Text(
+                                                                      'Error: ${snapshot.error}');
+                                                                }
+                                                                return Text(snapshot
+                                                                        .data ??
+                                                                    'No place name available');
+                                                            }
+                                                          },
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              )),
+                                        );
+                                      },
+                                    ),
                                   ));
                                 } else {
                                   return const Text("Tak ada data Donasi");
@@ -361,7 +372,7 @@ class _DonationPageState extends ConsumerState<DonationPage> {
                         Column(
                           children: [
                             GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 context.pushNamed("add-donation");
                               },
                               child: Container(
@@ -369,19 +380,218 @@ class _DonationPageState extends ConsumerState<DonationPage> {
                                     vertical: 16, horizontal: 12),
                                 width: double.infinity,
                                 decoration: BoxDecoration(
-                                    border: Border.all(color: primary, width: 1),
+                                    border:
+                                        Border.all(color: primary, width: 1),
                                     borderRadius: BorderRadius.circular(6)),
-                                child:  Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.add, size:24, color: primary,),
-                                    SizedBox(width:8 ,),
-                                    Text("Tambah Donasi", style: TextStyle(color: primary, fontWeight: FontWeight.w500, fontSize: 16),)
+                                    Icon(
+                                      Icons.add,
+                                      size: 24,
+                                      color: primary,
+                                    ),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text(
+                                      "Tambah Donasi",
+                                      style: TextStyle(
+                                          color: primary,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16),
+                                    )
                                   ],
                                 ),
                               ),
                             ),
+                            SizedBox(
+                              height: 24,
+                            ),
+                            resultAsyncValueMyDonation.when(
+                              data: (data) {
+                                if (data.isNotEmpty) {
+                                  return Expanded(
+                                      child: RefreshIndicator(
+                                    onRefresh: () => ref.refresh(
+                                        FindMyDonationProvider(ref
+                                                .read(authControllerProvider)
+                                                .uid!)
+                                            .future),
+                                    child: ListView.builder(
+                                      itemCount: data.length,
+                                      itemBuilder: (context, index) {
+                                        final myDonation = data[index];
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        MyDonationDetailPage(
+                                                            id: myDonation
+                                                                .id)));
+                                          },
+                                          child: Card(
+                                              surfaceTintColor: Colors.white,
+                                              color: const Color.fromRGBO(
+                                                  255, 255, 255, 1),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(
+                                                    width: double.infinity,
+                                                    height: 180.0,
+                                                    child: Stack(
+                                                      fit: StackFit.expand,
+                                                      children: [
+                                                        ClipRRect(
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .only(
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          6),
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          6)),
+                                                          child: Image.network(
+                                                            myDonation.image ??
+                                                                "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637",
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
+                                                        Positioned(
+                                                          right: 12.0,
+                                                          top: 12.0,
+                                                          child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        100.0), // Adjust the radius as needed
+                                                            child: Container(
+                                                              decoration: BoxDecoration(
+                                                                  border:
+                                                                      softBorder,
+                                                                  color: Colors.white,
+                                                                  boxShadow: [
+                                                                    softDrop
+                                                                  ]),
+                                                              // color: Colors.white,
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      vertical:
+                                                                          4,
+                                                                      horizontal:
+                                                                          12),
+                                                              child: Text(
+                                                                myDonation
+                                                                        .requests
+                                                                        .length
+                                                                        .toString() +
+                                                                    " Requests",
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize:
+                                                                      14.0,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 12,
+                                                        horizontal: 16),
+                                                    child: Column(
+                                                      // mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          myDonation.title,
+                                                          style: const TextStyle(
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 6,
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Icon(((myDonation
+                                                                            .isFinish !=
+                                                                        null) &&
+                                                                    (myDonation.isFinish !=
+                                                                        false))
+                                                                ? Icons
+                                                                    .check_circle_outline_rounded
+                                                                : Icons
+                                                                    .timer_outlined),
+                                                            SizedBox(
+                                                              width: 4,
+                                                            ),
+                                                            Text(
+                                                              ((myDonation.isFinish !=
+                                                                          null) &&
+                                                                      (myDonation
+                                                                              .isFinish !=
+                                                                          false))
+                                                                  ? "Sudah Selesai"
+                                                                  : (myDonation
+                                                                              .requests
+                                                                              .length >
+                                                                          0)
+                                                                      ? "Belum Menerima Permintaan"
+                                                                      : "Menunggu Request",
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 15,
+                                                              ),
+                                                            ),
+                                                            // Text("Halo")
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              )),
+                                        );
+                                      },
+                                    ),
+                                  ));
+                                } else {
+                                  return const Text(
+                                      "Belum ada data, Mari Berdonasi!");
+                                }
+                              },
+                              loading: () {
+                                return const Center(
+                                    child: Padding(
+                                  padding: EdgeInsets.all(20.0),
+                                  child: CircularProgressIndicator(),
+                                ));
+                              },
+                              error: (error, stack) {
+                                return Text('Error: $error');
+                              },
+                            )
                           ],
                         ),
                         // ColoredBox(color: color)

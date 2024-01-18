@@ -15,6 +15,7 @@ class DonationModel {
   final String phone;
   final List<dynamic> requests;
   final DateTime created_at;
+  final bool? isFinish;
   DonationModel({
     required this.id,
     required this.title,
@@ -25,7 +26,8 @@ class DonationModel {
     required this.longitude,
     required this.phone,
     required this.requests,
-    required this.created_at
+    required this.created_at,
+    required this.isFinish
   });
 
   DonationModel copyWith({
@@ -34,6 +36,7 @@ class DonationModel {
     String? user_id,
     String? image,
     bool? isOpen,
+    bool? isFinish,
     double? latitude,
     double? longitude,
     String? phone,
@@ -51,6 +54,7 @@ class DonationModel {
       phone: phone ?? this.phone,
       requests: requests ?? this.requests,
       created_at: created_at ?? this.created_at,
+      isFinish: isFinish ?? this.isFinish,
     );
   }
 
@@ -66,17 +70,13 @@ class DonationModel {
       'phone': phone,
       'requests': requests,
       'created_at': created_at,
+      'isFinish': isFinish,
     };
   }
 
   factory DonationModel.fromMap(Map<String, dynamic> map) {
     double lat = (map["location"] as GeoPoint).latitude;
     double long = (map["location"] as GeoPoint).longitude;
-    print(lat);
-    print(long);
-    print(map["created_at"]);
-    print(map["created_at"].runtimeType);
-    print("masuk 1");
     DateTime created = DateTime.parse(map['created_at'].toDate().toString());
     return DonationModel(
       id: map['id'] as String,
@@ -89,7 +89,8 @@ class DonationModel {
       phone: map['phone'] as String,
       created_at: created,
       requests: List<dynamic>.from(
-          map['requests'] as List<dynamic>), // Fix the missing parenthesis
+          map['requests'] as List<dynamic>),
+      isFinish: map["isFinish"] != null ? true : false // Fix the missing parenthesis
     );
   }
 
@@ -100,7 +101,7 @@ class DonationModel {
 
   @override
   String toString() {
-    return 'DonationModel(id: $id, created_at: $created_at,title: $title, user_id: $user_id, image: $image, isOpen: $isOpen, latitude: $latitude, longitude: $longitude, phone: $phone, requests: $requests)';
+    return 'DonationModel(id: $id, created_at: $created_at,title: $title, user_id: $user_id, image: $image, isOpen: $isOpen, latitude: $latitude, longitude: $longitude, phone: $phone, requests: $requests, isFinish: $isFinish)';
   }
 
   @override
@@ -116,6 +117,7 @@ class DonationModel {
         other.longitude == longitude &&
         other.phone == phone &&
         other.created_at == created_at &&
+        other.isFinish == isFinish &&
         listEquals(other.requests, requests);
   }
 
@@ -130,6 +132,7 @@ class DonationModel {
         longitude.hashCode ^
         phone.hashCode ^
         requests.hashCode ^
+        isFinish.hashCode ^
         created_at.hashCode;
   }
 }

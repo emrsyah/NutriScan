@@ -41,7 +41,7 @@ NutriScan provides personalized food recommendations and detailed nutritional in
 
 ## Features
 
-<img  src="assets/images/nutriscan-banner.png"  alt="Geats App">
+<img  src="assets/image/nutriscan-banner.png"  alt="Geats App">
 
 ### 1. Food Recommendation & Personalization
 
@@ -93,35 +93,35 @@ The true reward of your donation is, of course, the positive impact you create. 
 
 | Image 1                            | Image 2                            |
 | ---------------------------------- | ---------------------------------- |
-| ![Image 1](assets/images/rm1.jpeg) | ![Image 2](assets/images/rm2.jpeg) |
+| ![Image 1](assets/image/rm1.jpg) | ![Image 2](assets/image/rm2.jpg) |
 
 | Image 3                            | Image 4                            |
 | ---------------------------------- | ---------------------------------- |
-| ![Image 3](assets/images/rm3.jpeg) | ![Image 4](assets/images/rm4.jpeg) |
+| ![Image 3](assets/image/rm3.jpg) | ![Image 4](assets/image/rm4.jpg) |
 
 | Image 5                            | Image 6                            |
 | ---------------------------------- | ---------------------------------- |
-| ![Image 5](assets/images/rm5.jpeg) | ![Image 6](assets/images/rm6.jpeg) |
+| ![Image 5](assets/image/rm5.jpg) | ![Image 6](assets/image/rm6.jpg) |
 
 | Image 7                            | Image 8                            |
 | ---------------------------------- | ---------------------------------- |
-| ![Image 7](assets/images/rm7.jpeg) | ![Image 8](assets/images/rm8.jpeg) |
+| ![Image 7](assets/image/rm7.jpg) | ![Image 8](assets/image/rm8.jpg) |
 
 | Image 9                            | Image 10                             |
 | ---------------------------------- | ------------------------------------ |
-| ![Image 9](assets/images/rm9.jpeg) | ![Image 10](assets/images/rm10.jpeg) |
+| ![Image 9](assets/image/rm9.jpg) | ![Image 10](assets/image/rm10.jpg) |
 
 | Image 11                           | Image 12                             |
 | ---------------------------------- | ------------------------------------ |
-| ![Image 11](assets/images/rm11.jpeg)| ![Image 10](assets/images/rm12.jpeg) |
+| ![Image 11](assets/image/rm11.jpg)| ![Image 10](assets/image/rm12.jpg) |
 
 | Image 13                           | Image 14                             |
 | ---------------------------------- | ------------------------------------ |
-| ![Image 13](assets/images/rm13.jpeg)| ![Image 14](assets/images/rm14.jpeg) |
+| ![Image 13](assets/image/rm13.jpg)| ![Image 14](assets/image/rm14.jpg) |
 
 | Image 15                           | Image 16                            |
 | ---------------------------------- | ------------------------------------ |
-| ![Image 15](assets/images/rm15.jpeg)| ![Image 16](assets/images/rm16.jpeg) |
+| ![Image 15](assets/image/rm15.jpg)| ![Image 16](assets/image/rm16.jpg) |
 
 
 ## License

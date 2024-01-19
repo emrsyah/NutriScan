@@ -47,12 +47,6 @@ final app_router = GoRouter(
       builder: (context, state) => HomePage(),
     ),
     GoRoute(
-      name: 'food_details',
-      path: '/food/:id',
-      builder: (context, state) =>
-          FoodDetailsPage(foodId: int.parse(state.pathParameters["id"] ?? "1")),
-    ),
-    GoRoute(
       name: 'scan',
       path: '/scan',
       builder: (context, state) => ScanPage(),

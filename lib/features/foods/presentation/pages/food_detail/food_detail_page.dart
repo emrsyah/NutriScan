@@ -25,7 +25,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
   }
 
   Future<void> getFoodDetails() async {
-    // await ref.read(mealControllerProvider.notifier);
+    // await ref.read(dataControllerProvider.notifier);
     await ref
         .read(foodDetailControllerProvider.notifier)
         .getFoodDetails(widget.foodId);
@@ -33,9 +33,12 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final resultAsyncValue =
+        ref.watch(FutureFoodDetailController(widget.foodId));
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         leading: GestureDetector(
             onTap: () => Navigator.pop(context),
             child: const Icon(Icons.chevron_left_rounded,
@@ -50,287 +53,316 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
       body: SafeArea(
           child: Padding(
               padding: const EdgeInsets.all(16),
-              child: Consumer(
-                builder: (context, ref, _) {
-                  final meal = ref.watch(foodDetailControllerProvider);
-                  return SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(meal?.image ??
-                              "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637"),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16),
-                          child: Text(
-                            meal?.title ?? "",
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+              child: resultAsyncValue.when(
+                data: (data) {
+                  if (data != null) {
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(data.image ??
+                                "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637"),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Container(
-                          padding:
-                              const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-                          decoration: BoxDecoration(
-                              color: getBgColor(meal!.ingredientAisles!,
-                                  ref.read(authControllerProvider).allergies!),
-                              borderRadius: BorderRadius.circular(4)),
-                          child: Text(
-                            getStatusText(meal!.ingredientAisles!,
-                                ref.read(authControllerProvider).allergies!),
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                color: getTextColor(
-                                    meal!.ingredientAisles!,
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Text(
+                              data.title ?? "",
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 16),
+                            decoration: BoxDecoration(
+                                color: getBgColor(
+                                    data.ingredientAisles!,
                                     ref
                                         .read(authControllerProvider)
-                                        .allergies!)),
+                                        .allergies!),
+                                borderRadius: BorderRadius.circular(4)),
+                            child: Text(
+                              getStatusText(data.ingredientAisles!,
+                                  ref.read(authControllerProvider).allergies!),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  color: getTextColor(
+                                      data.ingredientAisles!,
+                                      ref
+                                          .read(authControllerProvider)
+                                          .allergies!)),
+                            ),
                           ),
-                        ),
-                        Padding(
-                            padding: const EdgeInsets.only(top: 24),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 16),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6),
-                                color: Colors.white,
-                                border: softBorder,
-                                boxShadow: [softDrop],
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                          Padding(
+                              padding: const EdgeInsets.only(top: 24),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  color: Colors.white,
+                                  border: softBorder,
+                                  boxShadow: [softDrop],
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    FactInfo(
+                                        info: data.readyInMinutes.toString() ??
+                                            "-",
+                                        desc: "min"),
+                                    FactInfo(
+                                        info: data.extendedIngredients?.length
+                                                .toString() ??
+                                            "-",
+                                        desc: "Bahan"),
+                                    FactInfo(
+                                        info: data.calories.toString() ?? "-",
+                                        desc: "Kcal"),
+                                    FactInfo(
+                                        info: data.servings.toString() ?? "-",
+                                        desc: "Sajian"),
+                                  ],
+                                ),
+                              )),
+                          const SizedBox(
+                            height: 32,
+                          ),
+                          DefaultTabController(
+                              length: 2,
+                              child: Column(
                                 children: [
-                                  FactInfo(
-                                      info: meal?.readyInMinutes.toString() ??
-                                          "-",
-                                      desc: "min"),
-                                  FactInfo(
-                                      info: meal?.extendedIngredients?.length
-                                              .toString() ??
-                                          "-",
-                                      desc: "Bahan"),
-                                  FactInfo(
-                                      info: meal?.calories.toString() ?? "-",
-                                      desc: "Kcal"),
-                                  FactInfo(
-                                      info: meal?.servings.toString() ?? "-",
-                                      desc: "Sajian"),
-                                ],
-                              ),
-                            )),
-                        const SizedBox(
-                          height: 32,
-                        ),
-                        DefaultTabController(
-                            length: 2,
-                            child: Column(
-                              children: [
-                                TabBar(
-                                    labelPadding: EdgeInsets.zero,
-                                    indicatorColor: Colors.transparent,
-                                    dividerColor: Colors.transparent,
-                                    unselectedLabelColor: Colors.black54,
-                                    labelStyle: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500),
-                                    labelColor: Colors.white,
-                                    indicatorSize: TabBarIndicatorSize.label,
-                                    indicator: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(50),
-                                        color: primary,
-                                        border: Border.all(width: 0)),
-                                    tabs: const [
-                                      Tab(
-                                          child: Align(
-                                            alignment: Alignment.center,
-                                            child: Text("Bahan"),
-                                          )),
-                                      Tab(
-                                          child: Align(
-                                            alignment: Alignment.center,
-                                            child: Text("Instruksi"),
-                                          )),
-                                    ]),
-                                const SizedBox(height: 24),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height,
-                                    child: TabBarView(
-                                      children: [
-                                      Column(
-                                        children: List.generate(
-                                            meal?.extendedIngredients?.length ??
-                                                0, (index) {
-                                          return Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        Image.asset(
-                                                          getStatusIcon(
-                                                            [
-                                                              meal
+                                  TabBar(
+                                      labelPadding: EdgeInsets.zero,
+                                      indicatorColor: Colors.transparent,
+                                      dividerColor: Colors.transparent,
+                                      unselectedLabelColor: Colors.black54,
+                                      labelStyle: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                      labelColor: Colors.white,
+                                      indicatorSize: TabBarIndicatorSize.label,
+                                      indicator: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          color: primary,
+                                          border: Border.all(width: 0)),
+                                      tabs: const [
+                                        Tab(
+                                            child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text("Bahan"),
+                                        )),
+                                        Tab(
+                                            child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text("Instruksi"),
+                                        )),
+                                      ]),
+                                  const SizedBox(height: 24),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                      child: TabBarView(children: [
+                                        Column(
+                                          children: List.generate(
+                                              data.extendedIngredients
+                                                      ?.length ??
+                                                  0, (index) {
+                                            return Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Row(
+                                                        children: [
+                                                          Image.asset(
+                                                            getStatusIcon(
+                                                              [
+                                                                data.extendedIngredients?[index]
+                                                                        .aisle ??
+                                                                    ""
+                                                              ],
+                                                              ref
+                                                                  .read(
+                                                                      authControllerProvider)
+                                                                  .allergies!,
+                                                            ),
+                                                            width: 20,
+                                                            height: 20,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 12,
+                                                          ),
+                                                          Expanded(
+                                                            child: Text(
+                                                              data
                                                                       ?.extendedIngredients?[
                                                                           index]
-                                                                      .aisle ??
-                                                                  ""
-                                                            ],
-                                                            ref
-                                                                .read(
-                                                                    authControllerProvider)
-                                                                .allergies!,
-                                                          ),
-                                                          width: 20,
-                                                          height: 20,
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 12,
-                                                        ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            meal
-                                                                    ?.extendedIngredients?[
-                                                                        index]
-                                                                    .name ??
-                                                                "-",
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: const TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontSize: 16,
-                                                              color: Colors
-                                                                  .black87,
+                                                                      .name ??
+                                                                  "-",
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 16,
+                                                                color: Colors
+                                                                    .black87,
+                                                              ),
                                                             ),
                                                           ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Text(data
+                                                                ?.extendedIngredients?[
+                                                                    index]
+                                                                .amount
+                                                                ?.toInt()
+                                                                .toString() ??
+                                                            "-"),
+                                                        const SizedBox(
+                                                          width: 4,
                                                         ),
+                                                        Text(data
+                                                                ?.extendedIngredients?[
+                                                                    index]
+                                                                .unit ??
+                                                            "-"),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 16,
+                                                )
+                                              ],
+                                            );
+                                          }),
+                                        ),
+                                        if (data.recipeSteps.isNotEmpty)
+                                          Column(
+                                            children: List.generate(
+                                                data.recipeSteps?.length ?? 0,
+                                                (index) {
+                                              return Column(
+                                                children: [
+                                                  Container(
+                                                    width: double.infinity,
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            20),
+                                                    decoration: BoxDecoration(
+                                                      border: softBorder,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              6),
+                                                      color: Colors.white,
+                                                      // border: Border.all(width: 0.6, color: graySecond),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.grey
+                                                              .withOpacity(
+                                                                  0.14),
+                                                          spreadRadius: 0,
+                                                          blurRadius: 4,
+                                                          offset: const Offset(
+                                                              0, 1),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          "Langkah ${index + 1}",
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontSize: 15),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 8,
+                                                        ),
+                                                        Text(
+                                                          data
+                                                              .recipeSteps[
+                                                                  index]
+                                                              .step,
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Color
+                                                                      .fromARGB(
+                                                                          170,
+                                                                          0,
+                                                                          0,
+                                                                          0)),
+                                                        )
                                                       ],
                                                     ),
                                                   ),
-                                                  Row(
-                                                    children: [
-                                                      Text(meal
-                                                              ?.extendedIngredients?[
-                                                                  index]
-                                                              .amount
-                                                              ?.toInt()
-                                                              .toString() ??
-                                                          "-"),
-                                                      const SizedBox(
-                                                        width: 4,
-                                                      ),
-                                                      Text(meal
-                                                              ?.extendedIngredients?[
-                                                                  index]
-                                                              .unit ??
-                                                          "-"),
-                                                    ],
-                                                  ),
+                                                  const SizedBox(
+                                                    height: 16,
+                                                  )
                                                 ],
-                                              ),
-                                              const SizedBox(
-                                                height: 16,
-                                              )
-                                            ],
-                                          );
-                                        }),
-                                      ),
-                                      if (meal.recipeSteps.isNotEmpty) Column(
-                                              children: List.generate(
-                                                  meal?.recipeSteps?.length ??
-                                                      0, (index) {
-                                                return Column(
-                                                  children: [
-                                                    Container(
-                                                      width: double.infinity,
-                                                      padding:
-                                                          const EdgeInsets.all(20),
-                                                      decoration: BoxDecoration(
-                                                        border: softBorder,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(6),
-                                                        color: Colors.white,
-                                                        // border: Border.all(width: 0.6, color: graySecond),
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: Colors.grey
-                                                                .withOpacity(
-                                                                    0.14),
-                                                            spreadRadius: 0,
-                                                            blurRadius: 4,
-                                                            offset:
-                                                                const Offset(0, 1),
-                                                          )
-                                                        ],
-                                                      ),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            "Langkah ${index + 1}",
-                                                            style: const TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                fontSize: 15),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 8,
-                                                          ),
-                                                          Text(
-                                                            meal
-                                                                .recipeSteps[
-                                                                    index]
-                                                                .step,
-                                                            style: const TextStyle(
-                                                                color: Color
-                                                                    .fromARGB(
-                                                                        170,
-                                                                        0,
-                                                                        0,
-                                                                        0)),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 16,
-                                                    )
-                                                  ],
-                                                );
-                                              }),
-                                            ) else const Text(
-                                              "Belum ada instruksi",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.black45),
-                                            )
+                                              );
+                                            }),
+                                          )
+                                        else
+                                          const Text(
+                                            "Belum ada instruksi",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.black45),
+                                          )
 
-                                      // Center(child: Text("Tidak ada instruksi", style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black54),))
-                                    ]))
-                              ],
-                            ))
-                      ],
+                                        // Center(child: Text("Tidak ada instruksi", style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black54),))
+                                      ]))
+                                ],
+                              ))
+                        ],
+                      ),
+                    );
+                  }
+                },
+                error: (error, stack) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Text(
+                        'Terjadi Kesalahan: $error',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: gray),
+                      ),
                     ),
                   );
+                },
+                loading: () {
+                  return const Center(child: CircularProgressIndicator());
                 },
               ))),
     );

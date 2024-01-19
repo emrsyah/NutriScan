@@ -26,3 +26,9 @@ class FoodDetailController extends StateNotifier<MealDetail?> {
 final foodDetailControllerProvider = StateNotifierProvider<FoodDetailController, MealDetail?>(
   (ref) => FoodDetailController(ref.read(mealRepositoryProvider)),
 );
+
+final FutureFoodDetailController =
+    FutureProvider.family<MealDetail, int>((ref, id) async {
+  final mealRepository = ref.read(mealRepositoryProvider);
+  return mealRepository.getFoodDetails(id);
+});

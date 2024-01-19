@@ -2,6 +2,7 @@ import 'package:nutriscan/features/auth/presentation/onboarding_allergies_page.d
 import 'package:nutriscan/features/auth/presentation/onboarding_finishing_page.dart';
 import 'package:nutriscan/features/auth/presentation/sign_in_page.dart';
 import 'package:nutriscan/features/auth/presentation/sign_up_page.dart';
+import 'package:nutriscan/features/common/presentation/pages/profile/profile_page.dart';
 import 'package:nutriscan/features/common/presentation/pages/splash_page.dart';
 import 'package:nutriscan/features/donation/presentation/pages/add_donation/add_donation_page.dart';
 import 'package:nutriscan/features/donation/presentation/pages/donation_page.dart';
@@ -64,6 +65,11 @@ final app_router = GoRouter(
       name: 'add-donation',
       path: '/add-donation',
       builder: (context, state) => AddDonationPage(),
+    ),
+    GoRoute(
+      name: 'profile',
+      path: '/profile',
+      builder: (context, state) => ProfilePage(),
     ),
   ],
 );

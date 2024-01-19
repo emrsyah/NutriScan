@@ -26,6 +26,12 @@ final mealControllerProvider =
   (ref) => MealController(ref.read(mealRepositoryProvider)),
 );
 
+// final HomeFoodsProvider =
+//     FutureProvider.family<List<Meal>, String>((ref, excludeTags) async {
+//   final mealRepository = ref.read(mealRepositoryProvider);
+//   // return mealRepository.getFoodScanDetail(id);
+// });
+
 // Approach:
 // 1. Buat State Notifier buat controllernya (MealController), dia ini make si repository
 // 2. ngebuat provider si state notifier controllernya (mealControllerProvider)

@@ -37,7 +37,7 @@ class BottomNavigation extends StatelessWidget {
           } else if (index == 3) {
             context.pushNamed("donation");
           } else if (index == 4) {
-            print("not yet ready");
+            context.pushNamed("profile");
           }
         },
 

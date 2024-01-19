@@ -24,7 +24,7 @@
 
 <p  align="center">
 
-NutriScan provides personalized food recommendations and detailed nutritional insights, empowering you to make informed choices. Easily donate excess or allergenic food to positively impact your community.
+NutriScan provides personalized food recommendations and detailed nutritional insights, empowering you to make informed choices. Easily donate excess or food you buy but have allergic to in mission positively impact your community.
 
 <br/>
 <br/>

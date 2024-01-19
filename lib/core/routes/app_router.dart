@@ -6,6 +6,7 @@ import 'package:nutriscan/features/common/presentation/pages/profile/profile_pag
 import 'package:nutriscan/features/common/presentation/pages/splash_page.dart';
 import 'package:nutriscan/features/donation/presentation/pages/add_donation/add_donation_page.dart';
 import 'package:nutriscan/features/donation/presentation/pages/donation_page.dart';
+import 'package:nutriscan/features/foods/presentation/pages/favorites/favorites_page.dart';
 import 'package:nutriscan/features/foods/presentation/pages/food_detail/food_detail_page.dart';
 import 'package:nutriscan/features/foods/presentation/pages/home/home_page.dart';
 import 'package:go_router/go_router.dart';
@@ -70,6 +71,11 @@ final app_router = GoRouter(
       name: 'profile',
       path: '/profile',
       builder: (context, state) => ProfilePage(),
+    ),
+    GoRoute(
+      name: 'favorites',
+      path: '/favorites',
+      builder: (context, state) => FavoritesPage(),
     ),
   ],
 );

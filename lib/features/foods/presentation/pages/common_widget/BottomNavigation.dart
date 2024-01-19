@@ -33,7 +33,7 @@ class BottomNavigation extends StatelessWidget {
           if (index == 0) {
             context.pushNamed("home");
           } else if (index == 1) {
-            print("not yet ready");
+            context.pushNamed("favorites");
           } else if (index == 3) {
             context.pushNamed("donation");
           } else if (index == 4) {

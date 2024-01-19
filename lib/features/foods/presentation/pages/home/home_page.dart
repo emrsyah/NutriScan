@@ -34,6 +34,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final resultAsyncValue = ref.watch(FutureHomeFoodController(""));
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -43,7 +44,6 @@ class _HomePageState extends ConsumerState<HomePage> {
             children: [
               HomeTopBar(name: ref.read(authControllerProvider).name),
               TextField(
-                // onTap: () => {print(_recipes)},
                 decoration: InputDecoration(
                   labelText: 'Cari Makanan & Minuman',
                   hintStyle: TextStyle(color: graySecond),
@@ -58,7 +58,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                   contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
                 ),
               ),
-              // Text(_recipes.length.toString()),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -75,27 +74,50 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                 ],
               ),
-              Expanded(child: Consumer(
-                builder: (context, ref, _) {
-                  final meals = ref.watch(mealControllerProvider);
-                  if (meals.isEmpty) {
-                    return const Center(
-                      child: Text('No recipes found.'),
+              Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () => ref.refresh(FutureHomeFoodController("").future),
+                    child: resultAsyncValue.when(
+                                    data: (data) {
+                    final meals = data;
+                    if (meals.isEmpty) {
+                      return const Center(
+                        child: Text('No recipes found.'),
+                      );
+                    } else {
+                      return ListView.builder(
+                        itemCount: meals.length,
+                        itemBuilder: (context, index) {
+                          return FoodCard(
+                            recipes: meals,
+                            index: index,
+                            userAllergies:
+                                ref.read(authControllerProvider).allergies!,
+                          );
+                        },
+                      );
+                    }
+                                    },
+                                    error: (error, stack) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text(
+                          'Terjadi Kesalahan: $error',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: gray),
+                        ),
+                      ),
                     );
-                  } else {
-                    return ListView.builder(
-                      itemCount: meals.length,
-                      itemBuilder: (context, index) {
-                        if (index >= 0 && index < meals.length) {
-                          return FoodCard(recipes: meals, index: index, userAllergies: ref.read(authControllerProvider).allergies!,);
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      },
-                    );
-                  }
-                },
-              )),
+                                    },
+                                    loading: () {
+                    return const Center(child: CircularProgressIndicator());
+                                    },
+                                  ),
+                  )),
             ],
           ),
         ),

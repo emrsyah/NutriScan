@@ -20,15 +20,6 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
   @override
   void initState() {
     super.initState();
-    // print(widget.foodId);
-    getFoodDetails();
-  }
-
-  Future<void> getFoodDetails() async {
-    // await ref.read(dataControllerProvider.notifier);
-    await ref
-        .read(foodDetailControllerProvider.notifier)
-        .getFoodDetails(widget.foodId);
   }
 
   @override

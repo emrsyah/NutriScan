@@ -18,13 +18,18 @@ class MealController extends StateNotifier<List<Meal>> {
       print("Error fetching meals: $error");
     }
   }
-
 }
 
 final mealControllerProvider =
     StateNotifierProvider<MealController, List<Meal>>(
   (ref) => MealController(ref.read(mealRepositoryProvider)),
 );
+
+final FutureHomeFoodController =
+    FutureProvider.family<List<Meal>, String?>((ref, excludeTags) async {
+  final mealRepository = ref.read(mealRepositoryProvider);
+  return mealRepository.getFoods();
+});
 
 // final HomeFoodsProvider =
 //     FutureProvider.family<List<Meal>, String>((ref, excludeTags) async {

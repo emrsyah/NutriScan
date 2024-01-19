@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:logger/logger.dart';
 import 'package:nutriscan/features/foods/domain/food_scan.dart';
 import 'package:nutriscan/features/foods/domain/food_scan_detail.dart';
 import 'package:nutriscan/features/foods/domain/meal_detail.dart';
@@ -10,22 +9,35 @@ import 'package:nutriscan/features/foods/domain/meal_model.dart';
 
 class MealRepository {
   final String _baseURL = "api.spoonacular.com";
-  final String _apiKey = "46d7ce88f3064ad6aac01e5164b7fcbc";
+  final String _apiKey = "fa423bb3799b47f899e35707491a9a32";
 
-  Future<List<Meal>> getFoods() async {
+  // * UNTUK JURI HACKFEST SUDAH KAMI SEDIAKAN 3 API_KEY, 2 Sebagai Cadangan
+  // final String _apiKey = "46d7ce88f3064ad6aac01e5164b7fcbc";
+  // final String _apiKey = "f8d6eeac11f24328b1b155731a5cdd29";
+
+  Future<List<Meal>> getFoods(String excludeTags) async {
     Map<String, String> parameters = {
       'timeFrame': 'day',
       'apiKey': _apiKey,
       'number': '5',
+      // 'include-tags' : "nut",
+      'exclude-tags' : excludeTags
     };
+
+
 
     Uri uri = Uri.https(_baseURL, '/recipes/random', parameters);
     var response = await http.get(uri);
     var jsonData = jsonDecode(response.body);
+    if(response.statusCode == 402 && response.body.contains("daily points limit")){
+      throw "Api Key Mencapai Limit, Kami Menyediakan 2 Api Key Cadangan Sebagai Tambahan, Tolong Cek File meal_repository.dart";
+      // print(jsonDecode(response.body));
+    }
 
     List<Meal> local_recipes = [];
     print('-----------------------------------------------------------');
     print(jsonData["recipes"][0]);
+    print(jsonData["recipes"].length);
     print('-----------------------------------------------------------');
     for (var eachFood in jsonData["recipes"]) {
       Meal meal = Meal.fromMap(eachFood);

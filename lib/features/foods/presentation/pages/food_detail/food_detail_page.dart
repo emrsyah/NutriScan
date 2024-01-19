@@ -47,6 +47,7 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
               child: resultAsyncValue.when(
                 data: (data) {
                   if (data != null) {
+                    // print(data.title);
                     return SingleChildScrollView(
                       child: Column(
                         children: [
@@ -338,16 +339,32 @@ class _FoodDetailsPageState extends ConsumerState<FoodDetailsPage> {
                   }
                 },
                 error: (error, stack) {
+                  // print(object)
                   return Center(
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: Text(
-                        'Terjadi Kesalahan: $error',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: gray),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Terjadi Kesalahan: $error',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: gray),
+                          ),
+                          SizedBox(
+                            height: 12,
+                          ),
+                          TextButton(
+                            child: Text("Refresh"),
+                            onPressed: () {
+                              ref.refresh(
+                                  FutureFoodDetailController(widget.foodId)
+                                      .future);
+                            },
+                          )
+                        ],
                       ),
                     ),
                   );

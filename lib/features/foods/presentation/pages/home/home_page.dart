@@ -25,16 +25,11 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
-    getAllFoods();
-  }
-
-  Future<void> getAllFoods() async {
-    await ref.read(mealControllerProvider.notifier).getFoods();
   }
 
   @override
   Widget build(BuildContext context) {
-    final resultAsyncValue = ref.watch(FutureHomeFoodController(""));
+    final resultAsyncValue = ref.watch(FutureHomeFoodController(ref.read(authControllerProvider).allergies!));
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -76,9 +71,10 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
               Expanded(
                   child: RefreshIndicator(
-                    onRefresh: () => ref.refresh(FutureHomeFoodController("").future),
-                    child: resultAsyncValue.when(
-                                    data: (data) {
+                onRefresh: () =>
+                    ref.refresh(FutureHomeFoodController(ref.read(authControllerProvider).allergies!).future),
+                child: resultAsyncValue.when(
+                  data: (data) {
                     final meals = data;
                     if (meals.isEmpty) {
                       return const Center(
@@ -97,27 +93,31 @@ class _HomePageState extends ConsumerState<HomePage> {
                         },
                       );
                     }
-                                    },
-                                    error: (error, stack) {
+                  },
+                  error: (error, stack) {
                     return Center(
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
-                        child: Text(
-                          'Terjadi Kesalahan: $error',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: gray),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Terjadi Kesalahan: $error',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: gray),
+                            ),
+                          ],
                         ),
                       ),
                     );
-                                    },
-                                    loading: () {
+                  },
+                  loading: () {
                     return const Center(child: CircularProgressIndicator());
-                                    },
-                                  ),
-                  )),
+                  },
+                ),
+              )),
             ],
           ),
         ),

@@ -24,7 +24,7 @@
 
 <p  align="center">
 
-NutriScan provides personalized food recommendations and detailed nutritional insights, empowering you to make informed choices. Easily donate excess or allergenic food to positively impact your community.
+NutriScan provides personalized food recommendations and detailed nutritional insights, empowering you to make informed choices. Easily donate excess or food you buy but have allergic to in mission positively impact your community.
 
 <br/>
 <br/>
@@ -78,7 +78,7 @@ The true reward of your donation is, of course, the positive impact you create. 
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/emrsyah/NutriScan.git
+   git clone https://github.com/emrsyah/NutriScan.git .
    ```
 2. Install dependencies:
    ```sh

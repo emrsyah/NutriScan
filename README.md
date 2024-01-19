@@ -78,7 +78,7 @@ The true reward of your donation is, of course, the positive impact you create. 
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/emrsyah/NutriScan.git
+   git clone https://github.com/emrsyah/NutriScan.git .
    ```
 2. Install dependencies:
    ```sh
